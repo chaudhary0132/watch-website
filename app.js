@@ -396,6 +396,54 @@ const PRODUCTS = [
         }
       }
     ]
+  },
+  {
+    id: 'arven-royal-tourbillon',
+    name: 'ARVÉN ROYAL TOURBILLON',
+    subtitle: 'Grand Complication 42mm • 18k Rose Gold Skeleton',
+    tagline: 'The pinnacle of high-complication Swiss horology with exposed flying tourbillon.',
+    tag: 'Rose Gold Tourbillon',
+    size: '42mm',
+    price: 6850,
+    badge: 'GRAND COMPLICATION',
+    isBestseller: true,
+    category: 'automatic',
+    image: '/images/arven-royal-tourbillon.jpg',
+    description: 'An extraordinary haute horlogerie tourbillon masterpiece showcasing hand-beveled rose gold bridges, fully skeletonized openwork mechanical movement, and an exposed flying tourbillon cage at 6 o’clock.',
+    specs: {
+      caseDiameter: '42 mm',
+      caseThickness: '11.2 mm',
+      caseMaterial: 'Solid 18k Rose Gold with Hand-Polished Mirror Chamfers',
+      dialColor: 'Skeletonized Openwork with Rose Gold Roman Numerals',
+      movement: 'Calibre AV-700 Flying Tourbillon Manual-Wind (21,600 vph)',
+      powerReserve: '72 Hours Twin-Barrel',
+      waterResistance: '50 Metres (5 ATM)',
+      glass: 'Double-Domed Box Sapphire Crystal with Double Anti-Reflective',
+      strapMaterial: 'Handcrafted Espresso Brown Alligator-Embossed Italian Leather',
+      lugWidth: '22 mm'
+    },
+    colorOptions: [
+      {
+        id: 'tourbillon-rose-gold',
+        name: '18k Rose Gold & Espresso Alligator',
+        shortName: 'Rose Gold Tourbillon',
+        colorHex: '#C98B75',
+        accentHex: '#3A271D',
+        price: 6850,
+        size: '42mm',
+        tag: 'Rose Gold',
+        badge: 'GRAND COMPLICATION',
+        image: '/images/arven-royal-tourbillon.jpg',
+        specs: {
+          caseDiameter: '42 mm',
+          caseThickness: '11.2 mm',
+          movement: 'Calibre AV-700 Flying Tourbillon (72h Power Reserve)',
+          glass: 'Double-Domed Box Sapphire Crystal',
+          waterResistance: '50 Metres (5 ATM)',
+          strapMaterial: 'Espresso Brown Alligator-Embossed Leather'
+        }
+      }
+    ]
   }
 ];
 
