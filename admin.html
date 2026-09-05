@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARVÉN • Atelier Director & Concierge Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-dark: #12100E;
+      --bg-card: #1C1815;
+      --bg-card-hover: #26201C;
+      --bg-surface: #221D19;
+      --color-gold: #D4AF37;
+      --color-gold-light: #E5D5C5;
+      --color-gold-hover: #B08A45;
+      --text-white: #FBF8F3;
+      --text-muted: #A39386;
+      --border-dark: #332B25;
+      --border-gold: rgba(212, 175, 55, 0.35);
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --shadow-lg: 0 16px 36px rgba(0,0,0,0.6);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      padding: 28px 20px;
+    }
+
+    .brand-logo {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      color: var(--text-white);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .brand-tagline {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--color-gold);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 32px;
+      display: block;
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-align: left;
+      width: 100%;
+    }
+
+    .nav-btn:hover {
+      background: var(--bg-surface);
+      color: var(--text-white);
+    }
+
+    .nav-btn.active {
+      background: rgba(212, 175, 55, 0.12);
+      border-color: var(--border-gold);
+      color: var(--color-gold);
+      font-weight: 600;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-gold);
+      color: #12100E;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    /* Main Content Area */
+    .main-wrapper {
+      margin-left: 280px;
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top right, #1E1915 0%, #12100E 100%);
+    }
+
+    .topbar {
+      height: 74px;
+      border-bottom: 1px solid var(--border-dark);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(20, 17, 14, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .page-title-box h1 {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      color: var(--text-white);
+    }
+
+    .page-title-box p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-gold {
+      background: var(--color-gold);
+      color: #12100E;
+      border: 1px solid var(--color-gold);
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-gold:hover {
+      background: var(--color-gold-hover);
+      border-color: var(--color-gold-hover);
+      color: #FFF;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-outline-gold {
+      background: transparent;
+      color: var(--color-gold);
+      border: 1px solid var(--border-gold);
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-gold:hover {
+      background: var(--bg-surface);
+      color: #FFF;
+      border-color: var(--color-gold);
+    }
+
+    .content-container {
+      padding: 36px 40px 60px 40px;
+      flex: 1;
+    }
+
+    /* KPI Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-gold);
+    }
+
+    .kpi-title {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 6px;
+    }
+
+    .kpi-trend {
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .trend-up { color: #10B981; }
+    .trend-gold { color: var(--color-gold); }
+
+    /* Tables */
+    .data-table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .table-header-bar {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .table-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--text-white);
+    }
+
+    .search-input {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      color: var(--text-white);
+      font-size: 0.82rem;
+      min-width: 260px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--color-gold);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.84rem;
+    }
+
+    th {
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-dark);
+      color: var(--text-white);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .status-new { background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .status-active { background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .status-gold { background: rgba(212, 175, 55, 0.2); color: var(--color-gold); border: 1px solid var(--border-gold); }
+    .status-pending { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 8, 7, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 650px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      padding: 36px;
+      position: relative;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--color-gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      color: var(--text-white);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--color-gold);
+    }
+
+    /* Tab Views */
+    .view-tab {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view-tab.active-tab {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Toast */
+    #admin-toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================
+       SIDEBAR NAVIGATION
+       ======================================================== -->
+  <aside class="sidebar">
+    <div>
+      <a href="index.html" class="brand-logo">ARVÉN</a>
+      <span class="brand-tagline">Atelier Director Portal</span>
+
+      <nav class="nav-group">
+        <button class="nav-btn active" onclick="window.switchTab('overview')">
+          <span>📊</span>
+          <span>Executive Overview</span>
+        </button>
+
+        <button class="nav-btn" onclick="window.switchTab('products')">
+          <span>⏱️</span>
+          <span>Timepiece Catalog</span>
+          <span class="nav-badge" id="badge-products-count">8</span>
+        </button>
+
+        <button class="nav-btn" onclick="window.switchTab('orders')">
+          <span>📦</span>
+          <span>Orders & Commissions</span>
+          <span class="nav-badge" id="badge-orders-count">3</span>
+        </button>
+
+        <button class="nav-btn" onclick="window.switchTab('inquiries')">
+          <span>✉️</span>
+          <span>VIP Salon Inquiries</span>
+          <span class="nav-badge" id="badge-inquiries-count">4</span>
+        </button>
+
+        <button class="nav-btn" onclick="window.switchTab('journal')">
+          <span>📰</span>
+          <span>Editorial Journal</span>
+          <span class="nav-badge">6</span>
+        </button>
+
+        <button class="nav-btn" onclick="window.switchTab('promos')">
+          <span>🎟️</span>
+          <span>VIP Privilege Codes</span>
+        </button>
+      </nav>
+    </div>
+
+    <div>
+      <div style="padding: 16px; background: var(--bg-surface); border: 1px solid var(--border-dark); border-radius: var(--radius-sm); margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-gold); color: #12100E; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
+            HL
+          </div>
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 600; color: #FFF;">Henri Laurent</div>
+            <div style="font-size: 0.7rem; color: var(--color-gold);">Master Horologist • Geneva</div>
+          </div>
+        </div>
+      </div>
+
+      <a href="index.html" target="_blank" class="btn-outline-gold" style="width: 100%; justify-content: center; text-align: center; font-size: 0.75rem;">
+        VIEW PUBLIC BOUTIQUE ↗
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================
+       MAIN WRAPPER
+       ======================================================== -->
+  <div class="main-wrapper">
+    
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="page-title-box">
+        <h1 id="topbar-title">Executive Overview</h1>
+        <p id="topbar-sub">Haute Horlogerie Operations & Client Management • Geneva & Le Locle</p>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="btn-outline-gold" onclick="window.resetAtelierDemoData()">
+          🔄 Sync Atelier Data
+        </button>
+        <button class="btn-gold" onclick="window.openAddProductModal()">
+          + Add Timepiece
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content-container">
+
+      <!-- ========================================================
+           TAB 1: EXECUTIVE OVERVIEW
+           ======================================================== -->
+      <section id="tab-overview" class="view-tab active-tab">
+        
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-title">TOTAL REVENUE (MTD)</div>
+            <div class="kpi-value" id="kpi-revenue">$184,650</div>
+            <div class="kpi-trend trend-up">
+              <span>▲ +18.4%</span>
+              <span style="color: var(--text-muted);">vs last month</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">ACTIVE COMMISSIONS</div>
+            <div class="kpi-value" id="kpi-orders-count">38</div>
+            <div class="kpi-trend trend-gold">
+              <span>⚡ 3 pending assembly</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">MANUFACTURE PIECES</div>
+            <div class="kpi-value" id="kpi-watches-count">8</div>
+            <div class="kpi-trend">
+              <span style="color: var(--text-muted);">Handcrafted Calibres</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">VIP SALON INQUIRIES</div>
+            <div class="kpi-value" id="kpi-inquiries-count">14</div>
+            <div class="kpi-trend trend-up">
+              <span>★ 100% 2-hr response rate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Overview Widgets -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;">
+          
+          <!-- Revenue Trajectory Chart Card -->
+          <div class="data-table-card" style="padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <div>
+                <h3 class="table-title">Manufacture Allocation & Sales Cadence</h3>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Monthly Revenue in USD (Thousands) • Geneva Salon & Bespoke Commissions</p>
+              </div>
+              <span class="status-badge status-gold">Q1 2026 LIVE</span>
+            </div>
+
+            <!-- Canvas Chart Visualization -->
+            <div style="height: 220px; width: 100%; position: relative;">
+              <canvas id="revenueChart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+          </div>
+
+          <!-- Quick Concierge Tasks -->
+          <div class="data-table-card" style="padding: 24px;">
+            <h3 class="table-title" style="margin-bottom: 16px;">Director Directives</h3>
+            <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.82rem;">
+              
+              <div style="padding: 12px 14px; background: var(--bg-surface); border-left: 3px solid var(--color-gold); border-radius: 2px;">
+                <div style="font-weight: 600; color: #FFF; margin-bottom: 2px;">Inspect Calibre AV-090 Assembly</div>
+                <div style="color: var(--text-muted); font-size: 0.74rem;">Heritage Slimline batch allocation for Zurich salon.</div>
+              </div>
+
+              <div style="padding: 12px 14px; background: var(--bg-surface); border-left: 3px solid #60A5FA; border-radius: 2px;">
+                <div style="font-weight: 600; color: #FFF; margin-bottom: 2px;">Private Video Call with Lord Sterling</div>
+                <div style="color: var(--text-muted); font-size: 0.74rem;">Bespoke Damascene Titanium commission.</div>
+              </div>
+
+              <div style="padding: 12px 14px; background: var(--bg-surface); border-left: 3px solid #34D399; border-radius: 2px;">
+                <div style="font-weight: 600; color: #FFF; margin-bottom: 2px;">Authorize 18k Diver Armored Dispatch</div>
+                <div style="color: var(--text-muted); font-size: 0.74rem;">Insured white-glove delivery to Mayfair, London.</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Recent Customer Commissions Table -->
+        <div class="data-table-card">
+          <div class="table-header-bar">
+            <h3 class="table-title">Recent Client Commissions & Orders</h3>
+            <button class="btn-outline-gold" onclick="window.switchTab('orders')">View All Commissions →</button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order Reference</th>
+                  <th>Client Connoisseur</th>
+                  <th>Timepiece Model</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Atelier Status</th>
+                </tr>
+              </thead>
+              <tbody id="overview-orders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ========================================================
+           TAB 2: TIMEPIECES CATALOG (CRUD)
+           ======================================================== -->
+      <section id="tab-products" class="view-tab">
+        <div class="data-table-card">
+          <div class="table-header-bar">
+            <div>
+              <h3 class="table-title">Manufacture Calibre & Timepiece Catalog</h3>
+              <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Manage active luxury watches, case variations, pricing, and live inventory</p>
+            </div>
+            
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <input type="text" class="search-input" id="search-products" placeholder="Search timepieces..." oninput="window.renderProductsTable()">
+              <button class="btn-gold" onclick="window.openAddProductModal()">+ Add Timepiece</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Watch</th>
+                  <th>Model Name</th>
+                  <th>Category</th>
+                  <th>Price (USD)</th>
+                  <th>Dimensions</th>
+                  <th>Movement Calibre</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 3: ORDERS & COMMISSIONS
+           ======================================================== -->
+      <section id="tab-orders" class="view-tab">
+        <div class="data-table-card">
+          <div class="table-header-bar">
+            <div>
+              <h3 class="table-title">Client Orders & Bespoke Commissions</h3>
+              <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Track order lifecycle, assembly status, custom engravings, and insured dispatch</p>
+            </div>
+            
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <select class="search-input" id="filter-order-status" onchange="window.renderOrdersTable()" style="min-width: 180px;">
+                <option value="ALL">All Statuses</option>
+                <option value="Pending Atelier Review">Pending Review</option>
+                <option value="In Assembly">In Assembly</option>
+                <option value="Quality Inspection">Quality Inspection</option>
+                <option value="Dispatched via Armored Courier">Dispatched</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Dossier Ref</th>
+                  <th>Client</th>
+                  <th>Timepiece Selection</th>
+                  <th>Engraving</th>
+                  <th>Commission Total</th>
+                  <th>Status Control</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="orders-table-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 4: VIP SALON INQUIRIES
+           ======================================================== -->
+      <section id="tab-inquiries" class="view-tab">
+        <div class="data-table-card">
+          <div class="table-header-bar">
+            <div>
+              <h3 class="table-title">Private Concierge & Salon Inquiries</h3>
+              <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Inquiries received via the Private Concierge Form and Geneva Atelier Bookings</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Inquiry Ref</th>
+                  <th>Client Details</th>
+                  <th>Nature of Inquiry</th>
+                  <th>Model Interest</th>
+                  <th>VIP Privileges</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inquiries-table-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 5: EDITORIAL JOURNAL MANAGER
+           ======================================================== -->
+      <section id="tab-journal" class="view-tab">
+        <div class="data-table-card">
+          <div class="table-header-bar">
+            <div>
+              <h3 class="table-title">Horology Journal & Editorial Articles</h3>
+              <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Curate essays from Le Locle master horologists and design directors</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Article</th>
+                  <th>Title & Excerpt</th>
+                  <th>Category</th>
+                  <th>Author</th>
+                  <th>Read Time</th>
+                  <th>Linked Timepiece</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="journal-table-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 6: VIP PROMO CODES
+           ======================================================== -->
+      <section id="tab-promos" class="view-tab">
+        <div class="data-table-card">
+          <div class="table-header-bar">
+            <div>
+              <h3 class="table-title">VIP Privilege Codes & Connoisseur Grants</h3>
+              <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Manage private discounts and promotional allocations for collector circles</p>
+            </div>
+            <button class="btn-gold" onclick="window.openAddPromoModal()">+ Create Privilege Code</button>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Promo Code</th>
+                  <th>Privilege Rate</th>
+                  <th>Target Allocation</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="promos-table-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================================
+       MODAL: ADD / EDIT TIMEPIECE
+       ======================================================== -->
+  <div id="product-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <button onclick="document.getElementById('product-modal').style.display='none'" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">✕</button>
+      
+      <span style="font-size: 0.7rem; color: var(--color-gold); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">MANUFACTURE ATELIER</span>
+      <h2 id="product-modal-title" style="font-family: var(--font-serif); font-size: 1.6rem; color: #FFF; margin: 4px 0 20px 0;">Add New Timepiece</h2>
+
+      <form id="product-form" onsubmit="window.saveProductForm(event)">
+        <input type="hidden" id="form-product-id">
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px;">
+          <div class="form-group">
+            <label>Timepiece Name *</label>
+            <input type="text" id="form-product-name" class="form-control" required placeholder="e.g. ARVÉN ROYAL TOURBILLON">
+          </div>
+          <div class="form-group">
+            <label>Price (USD) *</label>
+            <input type="number" id="form-product-price" class="form-control" required placeholder="4200">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Subtitle / Sub-specification</label>
+          <input type="text" id="form-product-subtitle" class="form-control" placeholder="e.g. 18k Rose Gold • Petite Seconde 39mm">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="form-product-category" class="form-control">
+              <option value="classic">Classic Minimalist</option>
+              <option value="chronograph">Bicompax Chronograph</option>
+              <option value="vintage">Art Déco Vintage</option>
+              <option value="diver">Aquatic Diver</option>
+              <option value="minimalist">Stealth DLC</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Badge</label>
+            <input type="text" id="form-product-badge" class="form-control" placeholder="e.g. LIMITED EDITION">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group">
+            <label>Case Diameter</label>
+            <input type="text" id="form-product-diameter" class="form-control" placeholder="40 mm">
+          </div>
+          <div class="form-group">
+            <label>Movement Calibre</label>
+            <input type="text" id="form-product-movement" class="form-control" placeholder="Calibre AV-105 Automatic">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Luxury Photograph URL / Image Path *</label>
+          <input type="text" id="form-product-image" class="form-control" required placeholder="/images/arven-exact-watch.png">
+        </div>
+
+        <div class="form-group">
+          <label>Description & Horological Notes</label>
+          <textarea id="form-product-desc" class="form-control" rows="3" placeholder="Sculpted in Le Locle with hand-anglage bridges..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; padding: 14px;">
+          COMMISSION TO CATALOG →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="admin-toast-container"></div>
+
+  <!-- ========================================================
+       ADMIN JAVASCRIPT LOGIC
+       ======================================================== -->
+  <script type="module">
+    // Default Fallback Data
+    const INITIAL_PRODUCTS = [
+      { id: 'arven-haute-collection', name: 'ARVÉN HAUTE MASTERPIECE COLLECTION', subtitle: '4 Signature Editions • Bespoke Multi-Tone Metallurgy', price: 3800, size: '40mm', category: 'classic', badge: 'MASTERPIECE 4-IN-1', image: '/images/arven-royal-blue.jpg', specs: { caseDiameter: '40 mm', movement: 'Calibre AV-090 Automatic', glass: 'Double-Domed Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
+      { id: 'arven-diver-twotone', name: 'ARVÉN DIVER TWO-TONE', subtitle: '18k Yellow Gold & 316L Surgical Steel • 41mm Ceramic Bezel', price: 4450, size: '41mm', category: 'diver', badge: 'ATELIER FLAGSHIP', image: '/images/arven-exact-watch.png', specs: { caseDiameter: '41 mm', movement: 'Calibre AV-300 High-Beat Automatic', glass: 'Triple Anti-Reflective Sapphire', waterResistance: '300 Metres (30 ATM)' } },
+      { id: 'arven-hero-wrist-watch', name: 'ARVÉN HERITAGE SLIMLINE', subtitle: 'Ultra-Thin 8.5mm Profile • 39mm 18k Rose Gold Case', price: 3450, size: '39mm', category: 'classic', badge: 'ICONIC SILHOUETTE', image: '/images/arven-hero-wrist.png', specs: { caseDiameter: '39 mm', movement: 'Calibre AV-085 Ultra-Thin Manual Wind', glass: 'Domed Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
+      { id: 'arven-cushion-silver', name: 'ARVÉN CUSHION ULTRA-SLIM', subtitle: 'Monochromatic 39mm • Ultra-Slim 7.8mm', price: 3650, size: '39mm', category: 'classic', badge: 'ATELIER BESPOKE', image: '/images/arven-cushion-silver.jpg', specs: { caseDiameter: '39 mm', movement: 'Calibre AV-090 Ultra-Thin Manual Wind', glass: 'Domed Box Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
+      { id: 'arven-square-noir', name: 'ARVÉN CARRÉ NOIR STEALTH', subtitle: 'Square 40mm Architectural Case • Matte DLC Coating', price: 4300, size: '40mm', category: 'minimalist', badge: 'STEALTH ALLOCATION', image: '/images/arven-square-noir.jpg', specs: { caseDiameter: '40 mm', movement: 'Calibre AV-105 Automatic with Date', glass: 'Sapphire Double-Sided AR', waterResistance: '100 Metres (10 ATM)' } },
+      { id: 'arven-chrono', name: 'ARVÉN CHRONO ROYALE', subtitle: 'Bicompax Chronograph 41mm • Solid Gold Pushers', price: 4200, size: '41mm', category: 'chronograph', badge: 'CHRONOMETRE', image: '/images/arven-twotone-chrono.jpg', specs: { caseDiameter: '41 mm', movement: 'Calibre AV-202 Column-Wheel Chrono', glass: 'Domed Sapphire AR', waterResistance: '100 Metres (10 ATM)' } },
+      { id: 'arven-heritage', name: 'ARVÉN GRAND HERITAGE', subtitle: 'Vintage Art Déco 39mm • Curved Tonneau Silhouette', price: 3800, size: '39mm', category: 'vintage', badge: 'VINTAGE ATELIER', image: '/images/arven-tonneau-deco.jpg', specs: { caseDiameter: '39 mm', movement: 'Calibre AV-090 Ultra-Thin Manual Wind', glass: 'Domed Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
+      { id: 'arven-noir', name: 'ARVÉN NOIR EDITION', subtitle: 'Midnight Edition 41mm • Deep Bronze & Onyx', price: 3950, size: '41mm', category: 'minimalist', badge: 'NEW RELEASE', image: '/images/arven-noir-highres.jpg', specs: { caseDiameter: '41 mm', movement: 'Calibre AV-105 Automatic with Date Window', glass: 'Sapphire Double-Sided Anti-Reflective', waterResistance: '100 Metres (10 ATM)' } }
+    ];
+
+    const INITIAL_ORDERS = [
+      { id: 'AV-892104', date: '2026-02-28T14:30:00Z', clientName: 'Lord Sterling Vance', clientEmail: 'sterling@vance-holdings.co.uk', itemName: 'ARVÉN DIVER TWO-TONE (41mm)', itemImg: '/images/arven-exact-watch.png', engraving: 'SEMPER FIDELIS', total: 4450, status: 'In Assembly' },
+      { id: 'AV-641092', date: '2026-02-27T09:15:00Z', clientName: 'Dr. Marcus Thorne', clientEmail: 'm.thorne@manhattan-clinic.com', itemName: 'ARVÉN HAUTE MASTERPIECE (Royal Blue)', itemImg: '/images/arven-royal-blue.jpg', engraving: 'XL ANNIVERSARY', total: 3800, status: 'Pending Atelier Review' },
+      { id: 'AV-418290', date: '2026-02-25T17:45:00Z', clientName: 'Countess Genevieve de Blois', clientEmail: 'genevieve@chateau-blois.fr', itemName: 'ARVÉN CARRÉ NOIR STEALTH (40mm)', itemImg: '/images/arven-square-noir.jpg', engraving: 'ÉTERNITÉ', total: 4300, status: 'Dispatched via Armored Courier' }
+    ];
+
+    const INITIAL_INQUIRIES = [
+      { id: 'ARV-VIP-8821', date: '2026-03-01T08:12:00Z', name: 'Arthur Sterling', email: 'arthur.sterling@mayfair-advisors.ch', phone: '+41 22 819 0044', type: 'Bespoke 3D Commission', model: 'ARVÉN DIVER TWO-TONE', videoCall: true, catalog: true, status: 'New' },
+      { id: 'ARV-VIP-7419', date: '2026-02-28T16:20:00Z', name: 'Baroness Claire von Keller', email: 'claire@keller-capital.de', phone: '+49 89 2100 440', type: 'Private Salon Appointment', model: 'ARVÉN HAUTE MASTERPIECE', videoCall: false, catalog: true, status: 'Salon Booked' },
+      { id: 'ARV-VIP-5920', date: '2026-02-26T11:05:00Z', name: 'Julian Thorne', email: 'jthorne@geneva-law.ch', phone: '+41 79 920 4400', type: 'Movement Care & Restoration', model: 'ARVÉN GRAND HERITAGE', videoCall: true, catalog: false, status: 'Director Contacted' }
+    ];
+
+    const INITIAL_PROMOS = [
+      { code: 'ARVEN10', discount: 10, target: 'VIP Connoisseur Circle', status: 'Active' },
+      { code: 'GENEVA20', discount: 20, target: 'Salon Private Allocation', status: 'Active' },
+      { code: 'BESPOKE15', discount: 15, target: 'First Atelier Commission', status: 'Active' }
+    ];
+
+    // Data Loaders
+    function getProducts() {
+      return JSON.parse(localStorage.getItem('arven_products')) || INITIAL_PRODUCTS;
+    }
+
+    function saveProducts(data) {
+      localStorage.setItem('arven_products', JSON.stringify(data));
+      renderProductsTable();
+      updateStats();
+    }
+
+    function getOrders() {
+      return JSON.parse(localStorage.getItem('arven_orders')) || INITIAL_ORDERS;
+    }
+
+    function saveOrders(data) {
+      localStorage.setItem('arven_orders', JSON.stringify(data));
+      renderOrdersTable();
+      updateStats();
+    }
+
+    function getInquiries() {
+      return JSON.parse(localStorage.getItem('arven_inquiries')) || INITIAL_INQUIRIES;
+    }
+
+    function saveInquiries(data) {
+      localStorage.setItem('arven_inquiries', JSON.stringify(data));
+      renderInquiriesTable();
+      updateStats();
+    }
+
+    function getPromos() {
+      return JSON.parse(localStorage.getItem('arven_promos')) || INITIAL_PROMOS;
+    }
+
+    function savePromos(data) {
+      localStorage.setItem('arven_promos', JSON.stringify(data));
+      renderPromosTable();
+    }
+
+    // UI Toast System
+    window.showAdminToast = (msg, type = 'gold') => {
+      const c = document.getElementById('admin-toast-container');
+      const t = document.createElement('div');
+      t.style.cssText = `
+        background: #1C1815;
+        border: 1px solid var(--border-gold);
+        border-radius: var(--radius-sm);
+        padding: 14px 20px;
+        color: #FBF8F3;
+        font-size: 0.82rem;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: auto;
+        animation: fadeIn 0.3s ease;
+      `;
+      t.innerHTML = `
+        <span style="color: var(--color-gold); font-size: 1rem;">✦</span>
+        <span style="flex: 1;">${msg}</span>
+      `;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 4000);
+    };
+
+    // Tab Switching
+    window.switchTab = (tabId) => {
+      document.querySelectorAll('.view-tab').forEach(el => el.classList.remove('active-tab'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.add('active-tab');
+
+      const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick')?.includes(tabId));
+      if (btn) btn.classList.add('active');
+
+      const titles = {
+        overview: ['Executive Overview', 'Haute Horlogerie Operations & Client Management • Geneva & Le Locle'],
+        products: ['Timepiece Catalog', 'Manage Handcrafted Calibres, Metallurgy Finishes & Inventory'],
+        orders: ['Client Orders & Commissions', 'Track Assembly, Custom Engravings & Armored Dispatches'],
+        inquiries: ['VIP Salon Inquiries', 'Private Client Concierge & Geneva Atelier Consultations'],
+        journal: ['Editorial Journal Manager', 'Curate Essays, Case Studies & Horological Insights'],
+        promos: ['VIP Privilege Codes', 'Manage Exclusive Discounts & Collector Allocations']
+      };
+
+      if (titles[tabId]) {
+        document.getElementById('topbar-title').textContent = titles[tabId][0];
+        document.getElementById('topbar-sub').textContent = titles[tabId][1];
+      }
+    };
+
+    // Update Stats & Badges
+    function updateStats() {
+      const products = getProducts();
+      const orders = getOrders();
+      const inquiries = getInquiries();
+
+      const totalRev = orders.reduce((sum, o) => sum + (o.total || 0), 164000);
+      document.getElementById('kpi-revenue').textContent = `$${totalRev.toLocaleString()}`;
+      document.getElementById('kpi-orders-count').textContent = orders.length + 35;
+      document.getElementById('kpi-watches-count').textContent = products.length;
+      document.getElementById('kpi-inquiries-count').textContent = inquiries.length + 11;
+
+      document.getElementById('badge-products-count').textContent = products.length;
+      document.getElementById('badge-orders-count').textContent = orders.length;
+      document.getElementById('badge-inquiries-count').textContent = inquiries.length;
+    }
+
+    // Render Overview Orders
+    function renderOverviewOrders() {
+      const tbody = document.getElementById('overview-orders-tbody');
+      const orders = getOrders().slice(0, 5);
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><strong style="color: var(--color-gold); font-family: var(--font-serif);">${o.id}</strong></td>
+          <td>${o.clientName}</td>
+          <td>${o.itemName || (o.items && o.items[0]?.product?.name) || 'ARVÉN Calibre'}</td>
+          <td><strong style="font-family: var(--font-serif); color: #FFF;">$${(o.total || 3800).toLocaleString()}</strong></td>
+          <td><span style="color: var(--text-muted); font-size: 0.75rem;">${new Date(o.date).toLocaleDateString()}</span></td>
+          <td><span class="status-badge ${o.status === 'Delivered' ? 'status-active' : 'status-gold'}">${o.status}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Products Table
+    window.renderProductsTable = () => {
+      const tbody = document.getElementById('products-table-tbody');
+      const search = (document.getElementById('search-products')?.value || '').toLowerCase();
+      let products = getProducts();
+
+      if (search) {
+        products = products.filter(p => p.name.toLowerCase().includes(search) || p.subtitle?.toLowerCase().includes(search));
+      }
+
+      tbody.innerHTML = products.map((p, idx) => `
+        <tr>
+          <td>
+            <div style="width: 48px; height: 58px; background: #26201C; border-radius: var(--radius-sm); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+              <img src="${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: ${p.image.endsWith('.png') && !p.image.includes('wrist') ? 'contain' : 'cover'};">
+            </div>
+          </td>
+          <td>
+            <strong style="color: #FFF; font-size: 0.88rem;">${p.name}</strong>
+            <div style="color: var(--text-muted); font-size: 0.74rem; margin-top: 2px;">${p.subtitle || ''}</div>
+          </td>
+          <td><span style="color: var(--color-gold); font-size: 0.75rem; text-transform: uppercase; font-weight: 600;">${p.category}</span></td>
+          <td><strong style="font-family: var(--font-serif); font-size: 0.95rem; color: var(--color-gold);">$${p.price.toLocaleString()}</strong></td>
+          <td>${p.size || (p.specs && p.specs.caseDiameter) || '40mm'}</td>
+          <td><span style="font-size: 0.76rem; color: var(--text-muted);">${(p.specs && p.specs.movement) || 'Swiss Automatic'}</span></td>
+          <td><span class="status-badge status-active">${p.badge || 'IN ATELIER STOCK'}</span></td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-outline-gold" onclick="window.editProduct(${idx})" style="padding: 4px 10px; font-size: 0.72rem;">EDIT</button>
+              <button class="btn-outline-gold" onclick="window.deleteProduct(${idx})" style="padding: 4px 10px; font-size: 0.72rem; color: #EF4444; border-color: rgba(239,68,68,0.4);">DELETE</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    // Product CRUD Operations
+    window.openAddProductModal = () => {
+      document.getElementById('product-form').reset();
+      document.getElementById('form-product-id').value = '';
+      document.getElementById('product-modal-title').textContent = 'Add New Handcrafted Timepiece';
+      document.getElementById('product-modal').style.display = 'flex';
+    };
+
+    window.editProduct = (idx) => {
+      const products = getProducts();
+      const p = products[idx];
+      if (!p) return;
+
+      document.getElementById('form-product-id').value = idx;
+      document.getElementById('form-product-name').value = p.name;
+      document.getElementById('form-product-price').value = p.price;
+      document.getElementById('form-product-subtitle').value = p.subtitle || '';
+      document.getElementById('form-product-category').value = p.category || 'classic';
+      document.getElementById('form-product-badge').value = p.badge || '';
+      document.getElementById('form-product-diameter').value = (p.specs && p.specs.caseDiameter) || p.size || '40 mm';
+      document.getElementById('form-product-movement').value = (p.specs && p.specs.movement) || 'Calibre AV-105 Automatic';
+      document.getElementById('form-product-image').value = p.image;
+      document.getElementById('form-product-desc').value = p.description || '';
+
+      document.getElementById('product-modal-title').textContent = `Edit ${p.name}`;
+      document.getElementById('product-modal').style.display = 'flex';
+    };
+
+    window.saveProductForm = (e) => {
+      e.preventDefault();
+      const idx = document.getElementById('form-product-id').value;
+      const products = getProducts();
+
+      const newWatch = {
+        id: idx !== '' ? products[idx].id : `arven-custom-${Date.now()}`,
+        name: document.getElementById('form-product-name').value.trim().toUpperCase(),
+        price: parseFloat(document.getElementById('form-product-price').value) || 3950,
+        subtitle: document.getElementById('form-product-subtitle').value.trim(),
+        category: document.getElementById('form-product-category').value,
+        badge: document.getElementById('form-product-badge').value.trim() || 'ATELIER SPECIAL',
+        image: document.getElementById('form-product-image').value.trim(),
+        size: document.getElementById('form-product-diameter').value.trim() || '40 mm',
+        description: document.getElementById('form-product-desc').value.trim() || 'Precision Swiss horology crafted in Le Locle.',
+        specs: {
+          caseDiameter: document.getElementById('form-product-diameter').value.trim() || '40 mm',
+          movement: document.getElementById('form-product-movement').value.trim() || 'Calibre AV-105 Automatic',
+          glass: 'Sapphire Crystal Anti-Reflective',
+          waterResistance: '100 Metres (10 ATM)'
+        },
+        colorOptions: [
+          { id: 'custom-1', name: 'Atelier Primary Metallurgy', shortName: 'Primary', colorHex: '#D4AF37', accentHex: '#181716', price: parseFloat(document.getElementById('form-product-price').value) || 3950, image: document.getElementById('form-product-image').value.trim() }
+        ]
+      };
+
+      if (idx !== '') {
+        products[idx] = { ...products[idx], ...newWatch };
+        window.showAdminToast(`Updated ${newWatch.name} in Atelier catalog.`);
+      } else {
+        products.unshift(newWatch);
+        window.showAdminToast(`Commissioned new timepiece: ${newWatch.name}`);
+      }
+
+      saveProducts(products);
+      document.getElementById('product-modal').style.display = 'none';
+
+      confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 }, colors: ['#D4AF37', '#FFF', '#26201C'] });
+    };
+
+    window.deleteProduct = (idx) => {
+      const products = getProducts();
+      const p = products[idx];
+      if (confirm(`Are you sure you want to remove "${p.name}" from public atelier allocations?`)) {
+        products.splice(idx, 1);
+        saveProducts(products);
+        window.showAdminToast(`Archived ${p.name}`);
+      }
+    };
+
+    // Render Orders Table
+    window.renderOrdersTable = () => {
+      const tbody = document.getElementById('orders-table-tbody');
+      const filter = document.getElementById('filter-order-status')?.value || 'ALL';
+      let orders = getOrders();
+
+      if (filter !== 'ALL') {
+        orders = orders.filter(o => o.status === filter);
+      }
+
+      tbody.innerHTML = orders.map((o, idx) => `
+        <tr>
+          <td><strong style="color: var(--color-gold); font-family: var(--font-serif);">${o.id}</strong></td>
+          <td>
+            <strong style="color: #FFF;">${o.clientName}</strong>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">${o.clientEmail}</div>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="${o.itemImg || (o.items && o.items[0]?.product?.image) || '/images/arven-exact-watch.png'}" style="width: 36px; height: 44px; object-fit: contain; background: #26201C; border-radius: var(--radius-sm);">
+              <div>
+                <div style="font-weight: 600; font-size: 0.82rem;">${o.itemName || (o.items && o.items[0]?.product?.name) || 'ARVÉN Calibre'}</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted);">${(o.items && o.items[0]?.selectedCase) || '18k Gold Finish'}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            ${o.engraving ? `<span style="color: var(--color-gold); font-style: italic; font-size: 0.75rem;">“${o.engraving}”</span>` : '<span style="color: var(--text-muted); font-size: 0.72rem;">None</span>'}
+          </td>
+          <td><strong style="font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold);">$${(o.total || 4200).toLocaleString()}</strong></td>
+          <td>
+            <select class="form-control" style="padding: 6px 10px; font-size: 0.75rem;" onchange="window.updateOrderStatus(${idx}, this.value)">
+              <option value="Pending Atelier Review" ${o.status === 'Pending Atelier Review' ? 'selected' : ''}>Pending Review</option>
+              <option value="In Assembly" ${o.status === 'In Assembly' ? 'selected' : ''}>In Assembly</option>
+              <option value="Quality Inspection" ${o.status === 'Quality Inspection' ? 'selected' : ''}>Quality Inspection</option>
+              <option value="Dispatched via Armored Courier" ${o.status === 'Dispatched via Armored Courier' ? 'selected' : ''}>Dispatched</option>
+              <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn-outline-gold" onclick="alert('Printing Armored Courier Dispatch Dossier for Order ${o.id}')" style="padding: 4px 8px; font-size: 0.7rem;">DOSSIER</button>
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    window.updateOrderStatus = (idx, newStatus) => {
+      const orders = getOrders();
+      orders[idx].status = newStatus;
+      saveOrders(orders);
+      window.showAdminToast(`Updated order ${orders[idx].id} status to: ${newStatus}`);
+    };
+
+    // Render Inquiries Table
+    window.renderInquiriesTable = () => {
+      const tbody = document.getElementById('inquiries-table-tbody');
+      const inquiries = getInquiries();
+
+      tbody.innerHTML = inquiries.map((iq, idx) => `
+        <tr>
+          <td><strong style="color: var(--color-gold); font-family: var(--font-serif);">${iq.id}</strong></td>
+          <td>
+            <strong style="color: #FFF;">${iq.name}</strong>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">${iq.email} • ${iq.phone}</div>
+          </td>
+          <td><span style="color: var(--color-gold); font-weight: 600; font-size: 0.78rem;">${iq.type}</span></td>
+          <td><span style="font-size: 0.8rem;">${iq.model}</span></td>
+          <td>
+            ${iq.videoCall ? '<span class="status-badge status-gold" style="margin-right: 4px;">📹 Video Call</span>' : ''}
+            ${iq.catalog ? '<span class="status-badge status-new">📖 Catalog</span>' : ''}
+          </td>
+          <td>
+            <select class="form-control" style="padding: 6px 10px; font-size: 0.75rem;" onchange="window.updateInquiryStatus(${idx}, this.value)">
+              <option value="New" ${iq.status === 'New' ? 'selected' : ''}>New Request</option>
+              <option value="Director Contacted" ${iq.status === 'Director Contacted' ? 'selected' : ''}>Director Contacted</option>
+              <option value="Salon Booked" ${iq.status === 'Salon Booked' ? 'selected' : ''}>Salon Booked</option>
+              <option value="Closed" ${iq.status === 'Closed' ? 'selected' : ''}>Closed</option>
+            </select>
+          </td>
+          <td>
+            <a href="mailto:${iq.email}?subject=ARVÉN%20Private%20Concierge%20Dossier%20${iq.id}" class="btn-outline-gold" style="padding: 4px 10px; font-size: 0.72rem;">REPLY</a>
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    window.updateInquiryStatus = (idx, newStatus) => {
+      const inquiries = getInquiries();
+      inquiries[idx].status = newStatus;
+      saveInquiries(inquiries);
+      window.showAdminToast(`Inquiry ${inquiries[idx].id} marked as: ${newStatus}`);
+    };
+
+    // Render Journal Table
+    window.renderJournalTable = () => {
+      const tbody = document.getElementById('journal-table-tbody');
+      const articles = [
+        { title: 'The Art of Swiss Watchmaking: Precision in Every Second', category: 'HOROLOGY', author: 'Henri Laurent (Master Horologist)', readTime: '5 MIN READ', watch: 'Heritage Slimline', image: '/images/arven-hero-wrist.png' },
+        { title: 'The Two-Tone Renaissance: Gold Coin-Edges & Ceramic Engineering', category: 'DESIGN', author: 'Elena Vance (Aesthetic Direction)', readTime: '6 MIN READ', watch: 'Diver Two-Tone', image: '/images/arven-exact-watch.png' },
+        { title: 'The Anatomy of Column-Wheel Chronographs: Tactile Mechanics', category: 'MECHANICS', author: 'Marc Dubois (Technical Director)', readTime: '7 MIN READ', watch: 'Chrono Royale', image: '/images/arven-twotone-chrono.jpg' },
+        { title: 'Royal Sunray Blue Dials: Galactic Guilloché & Light Refraction', category: 'HOROLOGY', author: 'Céleste Monnier (Master Enameller)', readTime: '4 MIN READ', watch: 'Haute Masterpiece', image: '/images/arven-royal-blue.jpg' },
+        { title: 'Art Déco Tonneau & Cushion Cases: 1920s Elegance Reimagined', category: 'GUIDES', author: 'Dr. Julian Thorne (Historian)', readTime: '6 MIN READ', watch: 'Grand Heritage', image: '/images/arven-tonneau-deco.jpg' },
+        { title: 'Stealth in Haute Horlogerie: Diamond-Like Carbon (DLC) Metallurgy', category: 'DESIGN', author: 'Elena Vance (Aesthetic Direction)', readTime: '5 MIN READ', watch: 'Noir Edition', image: '/images/arven-noir-highres.jpg' }
+      ];
+
+      tbody.innerHTML = articles.map(a => `
+        <tr>
+          <td>
+            <img src="${a.image}" style="width: 48px; height: 38px; object-fit: cover; border-radius: 2px;">
+          </td>
+          <td>
+            <strong style="color: #FFF; font-size: 0.85rem;">${a.title}</strong>
+          </td>
+          <td><span style="color: var(--color-gold); font-size: 0.72rem; font-weight: 700;">${a.category}</span></td>
+          <td><span style="font-size: 0.76rem; color: var(--text-muted);">${a.author}</span></td>
+          <td>${a.readTime}</td>
+          <td><span class="status-badge status-gold">${a.watch}</span></td>
+          <td>
+            <span class="status-badge status-active">PUBLISHED</span>
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    // Render Promo Codes Table
+    window.renderPromosTable = () => {
+      const tbody = document.getElementById('promos-table-tbody');
+      const promos = getPromos();
+
+      tbody.innerHTML = promos.map((p, idx) => `
+        <tr>
+          <td><strong style="font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold);">${p.code}</strong></td>
+          <td><span class="status-badge status-gold">${p.discount}% OFF</span></td>
+          <td>${p.target}</td>
+          <td><span class="status-badge status-active">${p.status}</span></td>
+          <td>
+            <button class="btn-outline-gold" onclick="window.deletePromo(${idx})" style="padding: 4px 8px; font-size: 0.7rem; color: #EF4444; border-color: rgba(239,68,68,0.4);">ARCHIVE</button>
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    window.openAddPromoModal = () => {
+      const code = prompt('Enter New VIP Privilege Code Name (e.g. MONACO25):');
+      if (!code) return;
+      const rate = prompt('Enter Discount Percentage (e.g. 15):', '15');
+      if (!rate) return;
+
+      const promos = getPromos();
+      promos.unshift({
+        code: code.trim().toUpperCase(),
+        discount: parseInt(rate) || 15,
+        target: 'Custom VIP Allocation',
+        status: 'Active'
+      });
+      savePromos(promos);
+      window.showAdminToast(`Created Privilege Code: ${code.toUpperCase()} (${rate}% OFF)`);
+    };
+
+    window.deletePromo = (idx) => {
+      const promos = getPromos();
+      promos.splice(idx, 1);
+      savePromos(promos);
+      window.showAdminToast('Archived Promo Code.');
+    };
+
+    // Reset Demo Data
+    window.resetAtelierDemoData = () => {
+      localStorage.setItem('arven_products', JSON.stringify(INITIAL_PRODUCTS));
+      localStorage.setItem('arven_orders', JSON.stringify(INITIAL_ORDERS));
+      localStorage.setItem('arven_inquiries', JSON.stringify(INITIAL_INQUIRIES));
+      localStorage.setItem('arven_promos', JSON.stringify(INITIAL_PROMOS));
+      renderProductsTable();
+      renderOrdersTable();
+      renderInquiriesTable();
+      renderPromosTable();
+      renderOverviewOrders();
+      updateStats();
+      window.showAdminToast('Atelier Data synchronized with Geneva Mainframe.');
+    };
+
+    // Simple Luxury Canvas Revenue Graph
+    function drawRevenueChart() {
+      const canvas = document.getElementById('revenueChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = 220;
+
+      const months = ['OCT', 'NOV', 'DEC', 'JAN', 'FEB', 'MAR (EST)'];
+      const data = [92, 114, 142, 128, 168, 185];
+      const max = 200;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Gradient Fill
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, 'rgba(212, 175, 55, 0.35)');
+      grad.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
+
+      ctx.beginPath();
+      const stepX = (canvas.width - 60) / (data.length - 1);
+      
+      data.forEach((val, i) => {
+        const x = 30 + i * stepX;
+        const y = canvas.height - 40 - (val / max) * (canvas.height - 70);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+
+      ctx.lineTo(30 + (data.length - 1) * stepX, canvas.height - 40);
+      ctx.lineTo(30, canvas.height - 40);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stroke Line
+      ctx.beginPath();
+      data.forEach((val, i) => {
+        const x = 30 + i * stepX;
+        const y = canvas.height - 40 - (val / max) * (canvas.height - 70);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = '#D4AF37';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Points & Labels
+      data.forEach((val, i) => {
+        const x = 30 + i * stepX;
+        const y = canvas.height - 40 - (val / max) * (canvas.height - 70);
+
+        ctx.fillStyle = '#FFF';
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#A39386';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(months[i], x, canvas.height - 15);
+        ctx.fillText(`$${val}k`, x, y - 10);
+      });
+    }
+
+    // Initialize Admin
+    window.addEventListener('DOMContentLoaded', () => {
+      updateStats();
+      renderOverviewOrders();
+      renderProductsTable();
+      renderOrdersTable();
+      renderInquiriesTable();
+      renderJournalTable();
+      renderPromosTable();
+      drawRevenueChart();
+
+      window.addEventListener('resize', drawRevenueChart);
+    });
+  </script>
+</body>
+</html>

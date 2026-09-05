@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARVÉN — TIME, REFINED. | Haute Horlogerie & Luxury Timepieces</title>
+  <meta name="description" content="Discover ARVÉN luxury wristwatches. Swiss-engineered automatic calibres, sapphire crystal, and timeless bespoke design crafted for those who value every moment." />
+  <meta name="theme-color" content="#F5EEE5" />
+
+  <!-- Google Fonts: Playfair Display & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/src/index.css">
+
+  <style>
+    .active-option {
+      border: 2px solid var(--color-champagne-gold) !important;
+      background: var(--bg-cream) !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- ========================================================
+       TOP EDITORIAL NAVBAR
+       ======================================================== -->
+  <header id="main-nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 900; transition: all var(--transition-normal); padding: 24px 0; background: rgba(245, 238, 229, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      <!-- Brand Wordmark -->
+      <a href="#hero" style="font-family: var(--font-serif); font-size: 1.75rem; font-weight: 700; letter-spacing: 0.26em; color: var(--color-deep-brown); text-transform: uppercase;">
+        ARVÉN
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="desktop-nav" style="display: flex; gap: 32px; align-items: center;">
+        <a href="#hero" class="btn-text">SHOP</a>
+        <a href="#special-additions" class="btn-text">COLLECTIONS</a>
+        <a href="#discover" class="btn-text">EDITORIAL</a>
+        <a href="#bespoke" class="btn-text">BESPOKE 3D</a>
+        <a href="#brands" class="btn-text">CALIBRES</a>
+        <a href="#journal" class="btn-text">JOURNAL</a>
+        <a href="#contact" class="btn-text">CONTACT</a>
+      </nav>
+
+      <!-- Right Actions -->
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <button id="nav-search-btn" aria-label="Search" style="color: var(--text-primary); padding: 8px; font-size: 1rem; display: flex; align-items: center;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+
+        <button id="nav-bag-btn" aria-label="Shopping Bag" style="color: var(--text-primary); padding: 8px; position: relative; display: flex; align-items: center;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span id="bag-count-badge" style="display: none; position: absolute; top: 2px; right: 2px; background: var(--color-champagne-gold); color: #FFF; font-size: 0.65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; align-items: center; justify-content: center;">0</span>
+        </button>
+
+        <a href="#special-additions" class="btn btn-primary desktop-cta" style="padding: 10px 22px; font-size: 0.75rem;">
+          SHOP NOW
+        </a>
+
+        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Menu" style="display: none; color: var(--text-primary); padding: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" style="display: none; position: fixed; inset: 0; z-index: 890; background: var(--bg-cream); padding: 100px 32px 40px 32px; flex-direction: column; justify-content: space-between;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <a href="#hero" onclick="document.getElementById('mobile-drawer').style.display='none'" style="font-family: var(--font-serif); font-size: 1.7rem; color: var(--color-deep-brown);">SHOP</a>
+      <a href="#special-additions" onclick="document.getElementById('mobile-drawer').style.display='none'" style="font-family: var(--font-serif); font-size: 1.7rem; color: var(--color-deep-brown);">COLLECTIONS</a>
+      <a href="#discover" onclick="document.getElementById('mobile-drawer').style.display='none'" style="font-family: var(--font-serif); font-size: 1.7rem; color: var(--color-deep-brown);">EDITORIAL</a>
+      <a href="#bespoke" onclick="document.getElementById('mobile-drawer').style.display='none'" style="font-family: var(--font-serif); font-size: 1.7rem; color: var(--color-deep-brown);">BESPOKE 3D</a>
+      <a href="#brands" onclick="document.getElementById('mobile-drawer').style.display='none'" style="font-family: var(--font-serif); font-size: 1.7rem; color: var(--color-deep-brown);">CALIBRES</a>
+      <a href="#journal" onclick="document.getElementById('mobile-drawer').style.display='none'" style="font-family: var(--font-serif); font-size: 1.7rem; color: var(--color-deep-brown);">JOURNAL</a>
+      <a href="#contact" onclick="document.getElementById('mobile-drawer').style.display='none'" style="font-family: var(--font-serif); font-size: 1.7rem; color: var(--color-deep-brown);">CONTACT</a>
+    </div>
+    <div>
+      <a href="#special-additions" onclick="document.getElementById('mobile-drawer').style.display='none'" class="btn btn-primary" style="width: 100%; text-align: center;">EXPLORE COLLECTION</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- ========================================================
+         HERO SECTION (MATCHING EXACT COMPOSITION FROM REFERENCE IMAGE)
+         ======================================================== -->
+    <section id="hero" style="padding-top: 130px; padding-bottom: 70px; background: var(--bg-primary); position: relative; overflow: hidden;">
+      <div class="container">
+        <!-- Top Editorial Headline -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 20px;">
+          <div>
+            <span class="section-eyebrow" style="margin-bottom: 6px;">ARVÉN — FINE HOROLOGY</span>
+            <h1 style="font-family: var(--font-serif); font-size: clamp(3.2rem, 7.5vw, 6.5rem); font-weight: 600; line-height: 0.95; color: var(--color-deep-brown); letter-spacing: -0.02em;">
+              ELEGANT<br>
+              <span style="font-weight: 400; font-style: italic; color: var(--color-champagne-gold);">WATCH</span>
+            </h1>
+          </div>
+
+          <!-- Top Right Mini Product Bar (from Reference Image 3) -->
+          <div id="hero-top-preview-watches" style="display: flex; gap: 14px; align-self: flex-start;">
+            <!-- Rendered via JS: 3 mini preview watch cards -->
+          </div>
+        </div>
+
+        <!-- Main Hero Center Grid (Wrist Watch Visual + Geometric Badges) -->
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: stretch;">
+          
+          <!-- Left/Center: Flagship Watch Showcase Card with Exact Watch & Interactive 3D Canvas -->
+          <div id="hero-watch-card-wrapper" style="position: relative; border-radius: var(--radius-lg); overflow: hidden; background: radial-gradient(circle at center, #2C211A 0%, #15110E 100%); min-height: 540px; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: var(--shadow-xl); border: 1px solid rgba(212,175,55,0.25);">
+            
+            <!-- Flagship Exact Watch Display (Default Active View) -->
+            <div id="hero-exact-watch-view" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              <!-- Warm Golden Radial Spotlight Glow -->
+              <div style="position: absolute; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle, rgba(212,175,55,0.26) 0%, rgba(212,175,55,0) 70%); filter: blur(35px); pointer-events: none;"></div>
+
+              <!-- Full Frame Exact Watch Presentation Edge-to-Edge with Dynamic Float & 3D Tilt -->
+              <div id="hero-exact-watch-rig" style="position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1); cursor: grab; overflow: hidden;">
+                <img src="/images/arven-hero-wrist.png" alt="ARVÉN Luxury Wristwatch Editorial" style="width: 100%; height: 100%; object-fit: cover; object-position: center; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+              </div>
+
+              <!-- Floating Frosted Glass Spotlight Card (from Reference Image) -->
+              <div class="wrist-spotlight-card" style="top: 24%; left: 8%; width: 235px; text-align: left; z-index: 6;">
+                <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-champagne-gold); margin-bottom: 8px;"></div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: #FFFFFF; line-height: 1.3;">Men's Watches for timekeeping</h4>
+                <span style="font-size: 0.72rem; color: #DFCDBC; display: block; margin-top: 4px;">Swiss Calibre AV-101 Silver Sunray</span>
+              </div>
+
+              <!-- Top Left Badge -->
+              <div style="position: absolute; top: 24px; left: 24px; background: rgba(36,33,32,0.88); backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 9999px; border: 1px solid var(--border-gold); display: flex; align-items: center; gap: 8px; pointer-events: none; z-index: 10;">
+                <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-champagne-gold); animation: pulse 2s infinite;"></div>
+                <span style="font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: #FFF;">ARVÉN CALIBRE • EDITORIAL WRIST</span>
+              </div>
+            </div>
+
+            <!-- Alternative 3D Interactive WebGL Canvas View (Toggleable) -->
+            <div id="hero-3d-view" style="display: none; position: absolute; inset: 0; background: radial-gradient(circle at center, #2E251E 0%, #15110E 100%); flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 0 60px rgba(0,0,0,0.7);">
+              <div id="hero-3d-canvas-container" style="width: 100%; height: 100%; position: relative;"></div>
+            </div>
+
+            <!-- Bottom Narrative Details on Hero Image -->
+            <div style="position: relative; z-index: 8; padding: 24px 32px; background: linear-gradient(0deg, rgba(21,17,14,0.92) 0%, rgba(21,17,14,0) 100%); color: #FFFFFF;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+                <div>
+                  <span style="font-family: var(--font-serif); font-size: 1.1rem; font-weight: 700; color: var(--color-champagne-gold); display: block; margin-bottom: 4px;">#01</span>
+                  <p style="font-size: 0.88rem; color: #FBF8F3; max-width: 260px; line-height: 1.4;">The latest trends and timeless elegance</p>
+                </div>
+
+                <button id="hero-view-toggle-btn" class="btn btn-outline" style="color: #FFFFFF; border-color: rgba(255,255,255,0.4); padding: 8px 16px; font-size: 0.72rem; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);">
+                  SWITCH TO 3D PROCEDURAL VIEW
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Trending Geometric Cutout Badge & Brand Philosophy (from Reference Image 3) -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 24px;">
+            
+            <!-- Trending Geometric Badge (from Reference Image 3) -->
+            <div class="trending-cutout-badge">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border-gold); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--color-champagne-gold);">
+                  ⏱
+                </div>
+                <div>
+                  <span style="font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-champagne-gold); font-weight: 600; display: block;">CURATED ATELIER</span>
+                  <h3 style="font-size: 1.2rem; color: #FFFFFF; letter-spacing: 0.05em;">TRENDING WATCH COLLECTION</h3>
+                </div>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #DFCDBC; line-height: 1.6; margin-bottom: 24px;">
+                Discover our newest collection of master-grade mechanical timepieces, hand-finished in Le Locle.
+              </p>
+
+              <a href="#special-additions" class="btn btn-gold" style="width: 100%; padding: 12px; font-size: 0.78rem;">
+                EXPLORE ALL →
+              </a>
+            </div>
+
+            <!-- Original Branded Statement (from Reference Image 3) -->
+            <div style="background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-sm);">
+              <span class="section-eyebrow" style="margin-bottom: 6px;">ORIGINAL BRANDED</span>
+              <h4 style="font-size: 1.15rem; color: var(--color-deep-brown); margin-bottom: 8px;">
+                Swiss Made for Discerning Collectors
+              </h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px;">
+                We have original branded mechanical timepieces for gents and ladies, engineered with 18k gold accents, sapphire crystals, and precision automatic calibres.
+              </p>
+
+              <div style="display: flex; gap: 16px; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
+                <div>
+                  <span style="font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; color: var(--color-deep-brown);">100%</span>
+                  <span style="font-size: 0.7rem; display: block; color: var(--text-muted); text-transform: uppercase;">Swiss Made</span>
+                </div>
+                <div style="width: 1px; background: var(--border-subtle);"></div>
+                <div>
+                  <span style="font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; color: var(--color-deep-brown);">2 Years</span>
+                  <span style="font-size: 0.7rem; display: block; color: var(--text-muted); text-transform: uppercase;">Warranty</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SPECIAL ADDITIONS (MATCHING EXACT CARDS & PILL TAGS FROM REFERENCE)
+         ======================================================== -->
+    <section id="special-additions" class="section-py" style="background: var(--bg-secondary);">
+      <div class="container">
+        <!-- Section Header with View All Link (from Reference) -->
+        <div class="section-header-split">
+          <div>
+            <span class="section-eyebrow">NEW TIMEPIECES</span>
+            <h2 class="section-title">SPECIAL ADDITIONS</h2>
+          </div>
+          <a href="#special-additions" class="btn-text" style="font-size: 0.82rem;">VIEW ALL →</a>
+        </div>
+
+        <!-- 4-Column Showcase Tiles (from Reference Image 3) -->
+        <div id="special-additions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         DISCOVER THE LATEST WATCH (EDITORIAL SPLIT FROM REFERENCE)
+         ======================================================== -->
+    <section id="discover" class="section-py" style="background: var(--bg-primary);">
+      <div class="container">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center;">
+          <!-- Left: Lifestyle Photo 1 -->
+          <div style="height: 480px; border-radius: var(--radius-lg); overflow: hidden; position: relative; box-shadow: var(--shadow-lg); background: url('https://images.unsplash.com/photo-1508057198894-247b23fe5ade?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;">
+            <div style="position: absolute; bottom: 24px; left: 24px; right: 24px; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); padding: 18px 24px; border-radius: var(--radius-sm); border: 1px solid var(--border-glass);">
+              <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;">HAUTE HORLOGERIE</span>
+              <h4 style="font-size: 1.1rem; color: var(--color-deep-brown);">The Language of Proportion</h4>
+            </div>
+          </div>
+
+          <!-- Right: Lifestyle Photo 2 & Text (from Reference Image 3) -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <div>
+              <span class="section-eyebrow">CONTEMPORARY MASTERPIECES</span>
+              <h2 class="section-title" style="margin-bottom: 16px;">DISCOVER THE LATEST WATCH</h2>
+              <p style="font-size: 1.05rem; color: var(--text-primary); line-height: 1.7; margin-bottom: 24px; font-family: var(--font-serif); font-style: italic;">
+                “Crafted with absolute dedication to fine horology, merging traditional Swiss tolerances with contemporary ergonomic luxury.”
+              </p>
+              <p style="color: var(--text-secondary); line-height: 1.65; margin-bottom: 32px;">
+                Every ARVÉN creation represents months of meticulous micro-milling, hand-beveled bridges, and rigorous chronometer testing. Tailored for individuals who navigate time with distinction.
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 16px; align-items: center;">
+              <a href="#bespoke" class="btn btn-primary">DISCOVER OUR PROCESS</a>
+              <a href="#special-additions" class="btn-text">EXPLORE TIMEPIECES →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SHOP OUR BRANDS / SIGNATURE CALIBRES (ACCORDION FROM REFERENCE)
+         ======================================================== -->
+    <section id="brands" class="section-py" style="background: var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header-split">
+          <div>
+            <span class="section-eyebrow">ATELIER COLLECTIONS</span>
+            <h2 class="section-title">SHOP OUR BRANDS</h2>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 380px;">Select a calibre series to inspect technical specifications and available variations.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 32px; align-items: center;">
+          <!-- Left Column: Wristshot (from Reference Image 3) -->
+          <div style="height: 440px; border-radius: var(--radius-md); overflow: hidden; background: url('https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat; box-shadow: var(--shadow-md); position: relative;">
+            <div style="position: absolute; bottom: 20px; left: 20px; background: rgba(44,30,23,0.85); color: #FFF; padding: 12px 18px; border-radius: var(--radius-sm); font-size: 0.78rem;">
+              ARVÉN Precision Chrono
+            </div>
+          </div>
+
+          <!-- Middle Column: Interactive Accordion List (from Reference Image 3) -->
+          <div id="brands-accordion-list" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Right Column: Vertical Showcase Pair (from Reference Image 3) -->
+          <div id="brands-showcase-pair" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         AUTHENTIC WATCHES (3-TILE CRAFTSMANSHIP FROM REFERENCE)
+         ======================================================== -->
+    <section id="authentic" class="section-py" style="background: var(--bg-primary);">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-eyebrow">CERTIFIED PROVENANCE</span>
+          <h2 class="section-title">AUTHENTIC WATCHES</h2>
+          <p class="section-subtitle">Each timepiece is hand-assembled, individually numbered, and backed by a comprehensive international 2-year warranty.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px;">
+          <div style="background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md);">
+            <div style="height: 240px; background: url('https://images.unsplash.com/photo-1594534475808-b18fc33b045e?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;"></div>
+            <div style="padding: 24px;">
+              <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; text-transform: uppercase;">01 • CALIBRE INSPECTION</span>
+              <h4 style="font-size: 1.15rem; color: var(--color-deep-brown); margin: 6px 0 10px 0;">COSC Multi-Position Testing</h4>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Every balance assembly is timed in 5 distinct physical positions across 15 days to guarantee chronometric precision within +/- 2 seconds daily.</p>
+            </div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md);">
+            <div style="height: 240px; background: url('https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;"></div>
+            <div style="padding: 24px;">
+              <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; text-transform: uppercase;">02 • ARTISANAL FINISHING</span>
+              <h4 style="font-size: 1.15rem; color: var(--color-deep-brown); margin: 6px 0 10px 0;">Zaratsu Mirror Chamfers</h4>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Our artisans apply alternating satin brushes and distortion-free Zaratsu mirror polishes, highlighting crisp case bevels that catch sunlight dynamically.</p>
+            </div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md);">
+            <div style="height: 240px; background: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;"></div>
+            <div style="padding: 24px;">
+              <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; text-transform: uppercase;">03 • VIP CONCIERGE</span>
+              <h4 style="font-size: 1.15rem; color: var(--color-deep-brown); margin: 6px 0 10px 0;">Insured Doorstep Consignment</h4>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Delivered with official ARVÉN Certificate of Authenticity, bespoke wooden presentation case, and personal horological advisor support.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         BESPOKE 3D ATELIER STUDIO
+         ======================================================== -->
+    <section id="bespoke" class="section-py" style="background: var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-eyebrow">ARVÉN BESPOKE ATELIER</span>
+          <h2 class="section-title">CONFIGURE YOUR TIMEPIECE</h2>
+          <p class="section-subtitle">Real-time 3D customizer for personalized metallurgy, dials, and leather finishes.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; background: var(--bg-cream); border-radius: var(--radius-xl); border: 1px solid var(--border-light); padding: 36px; box-shadow: var(--shadow-lg);">
+          <div id="bespoke-visual-card" style="position: relative; min-height: 480px; background: radial-gradient(circle at center, #2C211A 0%, #15110E 100%); border-radius: var(--radius-lg); overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 50px rgba(0,0,0,0.7); cursor: grab;">
+            <!-- Ambient Golden Glow behind exact watch -->
+            <div id="bespoke-glow" style="position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(212,175,55,0.28) 0%, rgba(212,175,55,0) 70%); filter: blur(35px); pointer-events: none; transition: background 0.3s ease;"></div>
+
+            <!-- Full Frame Exact Watch Image Edge-to-Edge with 3D Mouse Parallax Tilt & Float Animation -->
+            <div id="bespoke-exact-rig" style="position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);">
+              <img id="bespoke-exact-img" src="/images/arven-exact-watch.png" alt="ARVÉN Two-Tone Gold & Ceramic Diver" style="width: 100%; height: 100%; object-fit: cover; object-position: center; filter: drop-shadow(0 20px 35px rgba(0,0,0,0.85)); animation: floatWatch 4.5s ease-in-out infinite;">
+            </div>
+
+            <!-- 3D Procedural Canvas View Container (Optional Toggleable) -->
+            <div id="bespoke-watch-container" style="display: none; width: 100%; height: 100%; position: absolute; inset: 0;"></div>
+
+            <!-- Bottom Badge -->
+            <div style="position: absolute; bottom: 16px; background: rgba(36,33,32,0.92); backdrop-filter: blur(8px); padding: 8px 20px; border-radius: 9999px; border: 1px solid var(--border-gold); font-size: 0.78rem; font-weight: 500; color: #FFF; z-index: 6;">
+              ✦ Flagship Commission • <span id="bespoke-selected-case-name" style="color: var(--color-champagne-gold); font-weight: 600;">Two-Tone Ceramic & 18k Gold</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <h3 style="font-size: 1.85rem; color: var(--color-deep-brown); margin-bottom: 6px;">ARVÉN Bespoke Commission</h3>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px;">Handcrafted to your exact specifications in Le Locle, Switzerland.</p>
+
+              <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">1. Case Metallurgy & Bezel</label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                  <button class="bespoke-case-btn active-option" data-color="#D4AF37" data-name="Two-Tone Ceramic & 18k Gold" data-price-mod="0" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">18k Gold & Ceramic</button>
+                  <button class="bespoke-case-btn" data-color="#C98B75" data-name="18k Rose Gold & Ceramic" data-price-mod="200" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">18k Rose Gold (+$200)</button>
+                  <button class="bespoke-case-btn" data-color="#D8D8D8" data-name="Platinum Silver & Ceramic" data-price-mod="400" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Platinum Silver (+$400)</button>
+                  <button class="bespoke-case-btn" data-color="#181716" data-name="DLC Midnight Stealth" data-price-mod="150" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">DLC Stealth (+$150)</button>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">2. Handcrafted Bracelet / Strap</label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                  <button class="bespoke-strap-btn active-option" data-color="#D4AF37" data-name="Two-Tone Gold & Ceramic Multi-Link" data-type="metal" data-price-mod="0" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Two-Tone Metal Link</button>
+                  <button class="bespoke-strap-btn" data-color="#4A3325" data-name="Cognac Calfskin" data-type="leather" data-price-mod="-100" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Cognac Calfskin (-$100)</button>
+                  <button class="bespoke-strap-btn" data-color="#2C1E17" data-name="Espresso Alligator" data-type="leather" data-price-mod="120" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Espresso Alligator (+$120)</button>
+                  <button class="bespoke-strap-btn" data-color="#141312" data-name="Onyx Black Bridle" data-type="leather" data-price-mod="0" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Onyx Black Bridle</button>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">3. Dial & Luminous Indices</label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                  <button class="bespoke-dial-btn active-option" data-color="#121110" data-name="Onyx Noir with Gold Pips" data-price-mod="0" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Onyx Sunray Gold Pips</button>
+                  <button class="bespoke-dial-btn" data-color="#F5EEE5" data-name="Sunburst Champagne" data-price-mod="0" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Sunburst Champagne</button>
+                  <button class="bespoke-dial-btn" data-color="#FDFCF7" data-name="Grand Feu Ivory" data-price-mod="150" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Grand Feu Ivory (+$150)</button>
+                  <button class="bespoke-dial-btn" data-color="#E8E4DF" data-name="Argent Silver" data-price-mod="0" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; font-size: 0.8rem; cursor: pointer; text-align: left;">Argent Silver</button>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">4. Caseback Monogram</label>
+                <input id="bespoke-engraving-input" type="text" maxlength="16" placeholder="e.g., A.V. — 2026" style="width: 100%; padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF; outline: none; letter-spacing: 0.15em;">
+              </div>
+            </div>
+
+            <div style="padding-top: 20px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-size: 0.8rem; text-transform: uppercase;">Bespoke Total</span>
+                <div id="bespoke-total-price" style="font-size: 1.85rem; font-family: var(--font-serif); color: var(--color-deep-brown); font-weight: 600;">$4,450</div>
+              </div>
+              <button id="bespoke-add-to-bag" class="btn btn-primary" style="width: 100%; padding: 16px;">COMMISSION THIS TIMEPIECE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         AS FEATURED IN (PRESS)
+         ======================================================== -->
+    <section id="press" style="background: var(--bg-primary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); padding: 50px 0;">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 28px;">
+          <span class="section-eyebrow" style="margin-bottom: 0;">AS FEATURED IN</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+          <div class="glass-card" style="padding: 20px; text-align: center; background: #FFF;">
+            <h4 style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700; color: var(--color-deep-brown); letter-spacing: 0.15em;">WATCH JOURNAL</h4>
+          </div>
+          <div class="glass-card" style="padding: 20px; text-align: center; background: #FFF;">
+            <h4 style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700; color: var(--color-deep-brown); letter-spacing: 0.15em;">LUXE MAGAZINE</h4>
+          </div>
+          <div class="glass-card" style="padding: 20px; text-align: center; background: #FFF;">
+            <h4 style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700; color: var(--color-deep-brown); letter-spacing: 0.15em;">HOROLOGY TIMES</h4>
+          </div>
+          <div class="glass-card" style="padding: 20px; text-align: center; background: #FFF;">
+            <h4 style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700; color: var(--color-deep-brown); letter-spacing: 0.15em;">GENTLEMAN'S CHOICE</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         EDITORIAL JOURNAL & HOROLOGY BLOGS
+         ======================================================== -->
+    <section id="journal" class="section-py" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+      <div class="container">
+        <div class="section-header-split" style="margin-bottom: 32px;">
+          <div>
+            <span class="section-eyebrow">HAUTE HORLOGERIE ESSAYS & JOURNAL</span>
+            <h2 class="section-title">THE ARVÉN CHRONICLES</h2>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); max-width: 600px; margin-top: 8px;">
+              Insights from our master horologists in Le Locle, exploring the intersection of Swiss micro-engineering, bespoke metallurgy, and timeless design.
+            </p>
+          </div>
+        </div>
+
+        <!-- Blog Category Filter Tabs -->
+        <div id="journal-category-filters" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px;">
+          <button class="btn btn-primary" onclick="window.filterJournal('all')" id="journal-filter-all" style="padding: 8px 18px; font-size: 0.75rem; border-radius: var(--radius-full);">
+            ALL STORIES (6)
+          </button>
+          <button class="btn btn-outline" onclick="window.filterJournal('HOROLOGY')" id="journal-filter-HOROLOGY" style="padding: 8px 18px; font-size: 0.75rem; border-radius: var(--radius-full); background: #FFF;">
+            HOROLOGY & CRAFT
+          </button>
+          <button class="btn btn-outline" onclick="window.filterJournal('DESIGN')" id="journal-filter-DESIGN" style="padding: 8px 18px; font-size: 0.75rem; border-radius: var(--radius-full); background: #FFF;">
+            DESIGN & BESPOKE
+          </button>
+          <button class="btn btn-outline" onclick="window.filterJournal('MECHANICS')" id="journal-filter-MECHANICS" style="padding: 8px 18px; font-size: 0.75rem; border-radius: var(--radius-full); background: #FFF;">
+            CALIBRE MECHANICS
+          </button>
+          <button class="btn btn-outline" onclick="window.filterJournal('GUIDES')" id="journal-filter-GUIDES" style="padding: 8px 18px; font-size: 0.75rem; border-radius: var(--radius-full); background: #FFF;">
+            COLLECTOR GUIDES
+          </button>
+        </div>
+
+        <!-- Blog Cards Grid -->
+        <div id="journal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px;"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         NEWSLETTER (MATCHING BOTTOM INPUT FROM REFERENCE IMAGE)
+         ======================================================== -->
+    <section id="newsletter" style="background: var(--bg-primary); padding: 80px 0; border-top: 1px solid var(--border-subtle); text-align: center;">
+      <div class="container-narrow">
+        <h3 style="font-family: var(--font-serif); font-size: 2rem; color: var(--color-deep-brown); margin-bottom: 8px;">
+          Sign up for our newsletter!
+        </h3>
+        <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 28px;">
+          Join our private collector circle and receive private access to limited releases and bespoke allocations.
+        </p>
+
+        <form id="newsletter-form" style="display: flex; max-width: 480px; margin: 0 auto; background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-full); padding: 6px; box-shadow: var(--shadow-sm);">
+          <input id="newsletter-email" type="email" required placeholder="Enter your email" style="flex: 1; padding: 12px 20px; border: none; outline: none; font-size: 0.88rem; background: transparent; color: var(--text-primary);">
+          <button type="submit" class="btn btn-primary" style="border-radius: var(--radius-full); padding: 12px 28px; font-size: 0.78rem;">
+            SUBSCRIBE
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         7. PRIVATE CONCIERGE & ATELIER CONSULTATIONS (CONTACT)
+         ======================================================== -->
+    <section id="contact" style="padding: 100px 0; background: var(--bg-primary); position: relative; border-top: 1px solid var(--border-subtle);">
+      <div class="container">
+        <!-- Section Header -->
+        <div style="text-align: center; max-width: 720px; margin: 0 auto 56px auto;">
+          <span class="section-eyebrow">PRIVATE CLIENT CONCIERGE & COMMISSIONING</span>
+          <h2 style="font-size: 2.4rem; color: var(--color-deep-brown); margin-bottom: 14px; font-family: var(--font-serif); font-weight: 700; line-height: 1.2;">
+            Connect with Our Master Horologists
+          </h2>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;">
+            Whether commissioning a bespoke mechanical calibre, arranging a private salon appointment in Geneva, or inquiring about our limited editions, our client directors remain at your service.
+          </p>
+        </div>
+
+        <!-- 2-Column Luxury Layout -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 40px; align-items: start;">
+          
+          <!-- Left Column: Salons & VIP Channels -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Geneva Flagship Salon Card -->
+            <div style="background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 32px; box-shadow: var(--shadow-sm); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--color-champagne-gold); font-size: 1.2rem;">
+                  🏛️
+                </div>
+                <div>
+                  <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">FLAGSHIP SALON</span>
+                  <h3 style="font-size: 1.2rem; color: var(--color-deep-brown);">Geneva Private Salon</h3>
+                </div>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px;">
+                Rue du Rhône 42, 1204 Genève, Switzerland<br>
+                <strong style="color: var(--color-deep-brown);">Direct Private Line:</strong> +41 22 819 0000<br>
+                <strong style="color: var(--color-deep-brown);">Email:</strong> concierge@arven-horology.ch
+              </p>
+              <div style="font-size: 0.78rem; color: var(--text-muted); padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between;">
+                <span>Mon – Sat: 10:00 – 19:00 CET</span>
+                <span style="color: var(--color-champagne-gold); font-weight: 600;">Private Viewings</span>
+              </div>
+            </div>
+
+            <!-- Le Locle Manufacture & Workshop Card -->
+            <div style="background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 32px; box-shadow: var(--shadow-sm); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--color-champagne-gold); font-size: 1.2rem;">
+                  ⚙️
+                </div>
+                <div>
+                  <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">MANUFACTURE D'HORLOGERIE</span>
+                  <h3 style="font-size: 1.2rem; color: var(--color-deep-brown);">Le Locle Master Atelier</h3>
+                </div>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px;">
+                Route des Montagnes 18, 2400 Le Locle, Canton of Neuchâtel<br>
+                <strong style="color: var(--color-deep-brown);">Specialty:</strong> Haute Horlogerie Complications & Bespoke Commissions
+              </p>
+              <div style="font-size: 0.78rem; color: var(--text-muted); padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between;">
+                <span>Atelier Visits by VIP Invitation</span>
+                <span style="color: var(--color-champagne-gold); font-weight: 600;">Swiss Certified</span>
+              </div>
+            </div>
+
+            <!-- Direct VIP Assistance Banner -->
+            <div style="background: linear-gradient(135deg, #2C1E17 0%, #1A120E 100%); border-radius: var(--radius-md); padding: 28px; color: #FFF;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">DISCREET VIP SERVICES</span>
+                <span style="font-size: 0.72rem; background: rgba(212,175,55,0.2); color: var(--color-champagne-gold); padding: 4px 10px; border-radius: var(--radius-full); font-weight: 600;">2-HR RESPONSE</span>
+              </div>
+              <p style="font-size: 0.86rem; color: #DFCDBC; line-height: 1.6; margin-bottom: 16px;">
+                Need immediate assistance regarding a timepiece acquisition or bespoke commission? Our Senior Concierge is available via direct encrypted messaging.
+              </p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a href="https://wa.me/41228190000" target="_blank" class="btn btn-outline" style="color: #FFF; border-color: rgba(255,255,255,0.3); font-size: 0.75rem; padding: 8px 16px;">
+                  💬 Direct VIP WhatsApp
+                </a>
+                <a href="mailto:concierge@arven-horology.ch" class="btn btn-primary" style="font-size: 0.75rem; padding: 8px 16px;">
+                  ✉️ Email Concierge
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Interactive Bespoke Inquiry Form -->
+          <div style="background: #FFFFFF; border: 1px solid var(--border-gold); border-radius: var(--radius-lg); padding: 40px 36px; box-shadow: var(--shadow-lg); position: relative;">
+            <div style="margin-bottom: 24px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px;">
+              <span class="section-eyebrow" style="margin-bottom: 2px;">PRIVATE COMMISSION INQUIRY</span>
+              <h3 style="font-size: 1.45rem; color: var(--color-deep-brown);">Submit Private Request</h3>
+              <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">
+                Please provide your details below. A dedicated Client Director will respond with discreet precision.
+              </p>
+            </div>
+
+            <form id="contact-inquiry-form" style="display: flex; flex-direction: column; gap: 18px;">
+              
+              <!-- Salutation & Full Name -->
+              <div style="display: grid; grid-template-columns: 100px 1fr; gap: 12px;">
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-dark-brown); text-transform: uppercase; display: block; margin-bottom: 6px;">Title</label>
+                  <select id="contact-title" style="width: 100%; padding: 11px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: var(--bg-cream); font-size: 0.85rem; color: var(--text-primary);">
+                    <option value="Mr.">Mr.</option>
+                    <option value="Mrs.">Mrs.</option>
+                    <option value="Ms.">Ms.</option>
+                    <option value="Dr.">Dr.</option>
+                    <option value="Lord">Lord</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-dark-brown); text-transform: uppercase; display: block; margin-bottom: 6px;">Full Name *</label>
+                  <input type="text" id="contact-fullname" required placeholder="e.g. Arthur Sterling" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFFFFF; font-size: 0.85rem;">
+                </div>
+              </div>
+
+              <!-- Email & Phone -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-dark-brown); text-transform: uppercase; display: block; margin-bottom: 6px;">Email Address *</label>
+                  <input type="email" id="contact-email" required placeholder="name@domain.com" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFFFFF; font-size: 0.85rem;">
+                </div>
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-dark-brown); text-transform: uppercase; display: block; margin-bottom: 6px;">Phone / WhatsApp</label>
+                  <input type="tel" id="contact-phone" placeholder="+41 XX XXX XXXX" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFFFFF; font-size: 0.85rem;">
+                </div>
+              </div>
+
+              <!-- Inquiry Type & Watch Model Interest -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-dark-brown); text-transform: uppercase; display: block; margin-bottom: 6px;">Nature of Inquiry *</label>
+                  <select id="contact-inquiry-type" style="width: 100%; padding: 11px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFFFFF; font-size: 0.85rem; color: var(--text-primary);">
+                    <option value="bespoke">Bespoke 3D Commission</option>
+                    <option value="salon">Private Salon Appointment</option>
+                    <option value="allocation">Collector Edition Allocation</option>
+                    <option value="service">Movement Care & Restoration</option>
+                    <option value="general">General Connoisseur Inquiry</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-dark-brown); text-transform: uppercase; display: block; margin-bottom: 6px;">Timepiece of Interest</label>
+                  <select id="contact-model-interest" style="width: 100%; padding: 11px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFFFFF; font-size: 0.85rem; color: var(--text-primary);">
+                    <option value="haute-collection">Haute Masterpiece 4-in-1</option>
+                    <option value="diver-twotone">Two-Tone 18k Diver ($4,450)</option>
+                    <option value="heritage-slimline">Heritage Slimline ($3,450)</option>
+                    <option value="cushion-silver">Cushion Ultra-Slim ($3,650)</option>
+                    <option value="square-noir">Carré Noir Stealth ($4,300)</option>
+                    <option value="chrono-royale">Chrono Royale ($4,200)</option>
+                    <option value="other">Bespoke Unique Piece</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Message / Commission Brief -->
+              <div>
+                <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-dark-brown); text-transform: uppercase; display: block; margin-bottom: 6px;">Inquiry Brief / Specific Requirements</label>
+                <textarea id="contact-message" rows="4" placeholder="Please describe your requirements, preferred appointment date, or bespoke metallurgy preferences..." style="width: 100%; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFFFFF; font-size: 0.85rem; resize: vertical;"></textarea>
+              </div>
+
+              <!-- VIP Checkbox Options -->
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; color: var(--text-secondary);">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" id="contact-video-call" style="accent-color: var(--color-champagne-gold);">
+                  Request 1-on-1 private video consultation with Master Watchmaker
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" id="contact-catalog" checked style="accent-color: var(--color-champagne-gold);">
+                  Receive complimentary hardcover ARVÉN 2026 Manufacture Catalog
+                </label>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" id="contact-submit-btn" class="btn btn-primary" style="padding: 16px; width: 100%; font-size: 0.84rem; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 6px;">
+                TRANSMIT PRIVATE INQUIRY →
+              </button>
+            </form>
+
+            <!-- Success Confirmation Card (Hidden by Default) -->
+            <div id="contact-success-state" style="display: none; text-align: center; padding: 30px 10px;">
+              <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--bg-secondary); border: 2px solid var(--color-champagne-gold); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--color-champagne-gold); margin: 0 auto 16px auto;">
+                ✓
+              </div>
+              <span class="section-eyebrow">INQUIRY REGISTERED</span>
+              <h3 style="font-size: 1.45rem; color: var(--color-deep-brown); margin-bottom: 8px;">Private Consultation Requested</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                Thank you. Your dossier <strong id="contact-ref-code" style="color: var(--color-deep-brown);">#ARV-VIP-8821</strong> has been assigned to our Geneva Salon Concierge.
+              </p>
+              <button class="btn btn-outline" onclick="window.resetContactForm()" style="font-size: 0.75rem; padding: 8px 18px;">
+                SUBMIT ANOTHER INQUIRY
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================
+       MINIMALIST LUXURY FOOTER (MATCHING REFERENCE)
+       ======================================================== -->
+  <footer id="footer" style="background: #2C1E17; color: #FBF8F3; padding: 80px 0 36px 0;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 60px;">
+        <div>
+          <a href="#hero" style="font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; letter-spacing: 0.22em; color: #FFF; display: block; margin-bottom: 12px;">ARVÉN</a>
+          <p style="font-size: 0.75rem; letter-spacing: 0.15em; color: var(--color-champagne-gold); text-transform: uppercase; font-weight: 600; margin-bottom: 12px;">TIMELESS DESIGN. PRECISION CRAFTSMANSHIP.</p>
+          <p style="font-size: 0.84rem; color: #C9A98B; line-height: 1.6;">Le Locle Atelier d'Horlogerie Genève.</p>
+        </div>
+
+        <div>
+          <h4 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em; color: var(--color-champagne-gold); text-transform: uppercase; margin-bottom: 16px;">COLLECTIONS</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.84rem; color: #DFCDBC;">
+            <li><a href="#special-additions">Classic Gold</a></li>
+            <li><a href="#special-additions">Chrono Royale</a></li>
+            <li><a href="#special-additions">Grand Heritage</a></li>
+            <li><a href="#bespoke">Bespoke Atelier</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em; color: var(--color-champagne-gold); text-transform: uppercase; margin-bottom: 16px;">CLIENT CARE</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.84rem; color: #DFCDBC;">
+            <li>Complimentary Delivery</li>
+            <li>2-Year Swiss Warranty</li>
+            <li>30-Day Returns</li>
+            <li>Care & Sizing</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em; color: var(--color-champagne-gold); text-transform: uppercase; margin-bottom: 16px;">BOUTIQUE</h4>
+          <p style="font-size: 0.84rem; color: #DFCDBC; margin-bottom: 6px;">Rue du Rhône 42, 1204 Genève</p>
+          <p style="font-size: 0.84rem; color: #DFCDBC; margin-bottom: 6px;">+41 22 819 0000</p>
+          <p style="font-size: 0.84rem; color: #DFCDBC;">concierge@arven-horology.ch</p>
+        </div>
+      </div>
+
+      <div style="padding-top: 24px; border-top: 1px solid rgba(201, 169, 139, 0.2); display: flex; justify-content: space-between; font-size: 0.75rem; color: #A39386; flex-wrap: wrap; gap: 12px; align-items: center;">
+        <div>© 2026 ARVÉN. All Rights Reserved. Haute Horlogerie Genève.</div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <span>Privacy Policy</span>
+          <span>Terms of Service</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       MODALS & DRAWERS
+       ======================================================== -->
+  <!-- Quick View Modal -->
+  <div id="quick-view-modal" class="modal-overlay" style="display: none;">
+    <div style="width: 100%; max-width: 880px; max-height: 90vh; background: var(--bg-cream); border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-xl); overflow-y: auto; position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+      <button id="quick-view-close-btn" aria-label="Close" style="position: absolute; top: 18px; right: 18px; background: #FFF; border: 1px solid var(--border-light); border-radius: 50%; padding: 6px; cursor: pointer; z-index: 10;">✕</button>
+
+      <div style="background: radial-gradient(circle at center, #FFF 0%, #E9DED1 100%); padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 380px;">
+        <div id="quick-view-visual" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+      </div>
+
+      <div style="padding: 36px 32px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <span class="section-eyebrow" style="margin-bottom: 4px;">HAUTE HORLOGERIE</span>
+          <h2 id="quick-view-title" style="font-size: 1.85rem; color: var(--color-deep-brown); margin-bottom: 4px;"></h2>
+          <p id="quick-view-subtitle" style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;"></p>
+          <div id="quick-view-price" style="font-family: var(--font-serif); font-size: 1.75rem; font-weight: 600; color: var(--color-deep-brown); margin-bottom: 16px;"></div>
+          <p id="quick-view-desc" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 20px;"></p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+            <div style="background: #FFF; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Diameter</span>
+              <span id="quick-view-spec-diam" style="font-size: 0.82rem; font-weight: 600;"></span>
+            </div>
+            <div style="background: #FFF; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Movement</span>
+              <span id="quick-view-spec-mov" style="font-size: 0.82rem; font-weight: 600;"></span>
+            </div>
+            <div style="background: #FFF; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Crystal</span>
+              <span id="quick-view-spec-glass" style="font-size: 0.82rem; font-weight: 600;"></span>
+            </div>
+            <div style="background: #FFF; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Water Resistance</span>
+              <span id="quick-view-spec-water" style="font-size: 0.82rem; font-weight: 600;"></span>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px;">Select Finish</label>
+            <div id="quick-view-finishes" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+          </div>
+        </div>
+
+        <button id="quick-view-add-to-bag" class="btn btn-primary" style="width: 100%; padding: 16px;">ADD TO BAG</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Article Modal -->
+  <div id="article-modal" class="modal-overlay" style="display: none;">
+    <div style="width: 100%; max-width: 760px; max-height: 85vh; background: var(--bg-cream); border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-xl); overflow-y: auto; position: relative; padding: 36px;">
+      <button id="article-modal-close-btn" aria-label="Close" style="position: absolute; top: 18px; right: 18px; background: #FFF; border: 1px solid var(--border-light); border-radius: 50%; padding: 6px; cursor: pointer; z-index: 10;">✕</button>
+      
+      <!-- Article Cover Image -->
+      <div id="article-modal-image" style="height: 260px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 24px; background: #2C1E17;"></div>
+
+      <span id="article-modal-category" class="section-eyebrow" style="margin-bottom: 0;"></span>
+      <h1 id="article-modal-title" style="font-size: 2.2rem; color: var(--color-deep-brown); margin: 12px 0 16px 0; line-height: 1.2;"></h1>
+      <div style="display: flex; gap: 16px; font-size: 0.82rem; color: var(--text-muted); padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 24px;">
+        <span id="article-modal-author" style="color: var(--color-dark-brown); font-weight: 600;"></span>
+        <span id="article-modal-time"></span>
+        <span id="article-modal-date"></span>
+      </div>
+      <blockquote id="article-modal-quote" style="border-left: 3px solid var(--color-champagne-gold); padding-left: 20px; font-family: var(--font-serif); font-style: italic; font-size: 1.2rem; color: var(--color-deep-brown); margin-bottom: 24px;"></blockquote>
+      <div id="article-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Shopping Bag Drawer -->
+  <div id="cart-drawer" class="modal-overlay" style="display: none; justify-content: flex-end; padding: 0;">
+    <div style="width: 100%; max-width: 480px; height: 100%; background: var(--bg-cream); border-left: 1px solid var(--border-light); display: flex; flex-direction: column; box-shadow: var(--shadow-xl); z-index: 1001;">
+      <div style="padding: 24px 28px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; background: #FFF;">
+        <div>
+          <span class="section-eyebrow" style="margin-bottom: 2px;">YOUR SELECTION</span>
+          <h3 style="font-size: 1.35rem; color: var(--color-deep-brown);">Shopping Bag</h3>
+        </div>
+        <button id="cart-close-btn" style="padding: 8px; border-radius: 50%; background: var(--bg-primary); cursor: pointer;">✕</button>
+      </div>
+
+      <div style="background: var(--bg-secondary); padding: 12px 28px; border-bottom: 1px solid var(--border-subtle); font-size: 0.78rem; font-weight: 500;">
+        ✈ Complimentary Worldwide Insured Delivery Included
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; padding: 24px 28px;">
+        <div id="cart-empty-state" style="text-align: center; padding: 60px 0;">
+          <p style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--color-dark-brown); margin-bottom: 8px;">Your bag is empty</p>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Discover our signature handcrafted timepieces.</p>
+        </div>
+        <div id="cart-items-container"></div>
+      </div>
+
+      <div id="cart-footer-area" style="display: none; padding: 24px 28px; border-top: 1px solid var(--border-subtle); background: #FFF;">
+        <form id="promo-form" style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <input id="promo-input" type="text" placeholder="Promo (try ARVEN10)" style="flex: 1; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); font-size: 0.8rem; text-transform: uppercase;">
+          <button type="submit" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.75rem;">APPLY</button>
+        </form>
+
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>Subtotal</span>
+            <span id="cart-subtotal-val">$0</span>
+          </div>
+          <div id="cart-discount-row" style="display: none; justify-content: space-between; color: var(--color-champagne-gold); font-weight: 600;">
+            <span>VIP Privilege (10%)</span>
+            <span id="cart-discount-val">-$0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-family: var(--font-serif); font-weight: 700; color: var(--color-deep-brown); border-top: 1px solid var(--border-subtle); padding-top: 8px; margin-top: 4px;">
+            <span>Estimated Total</span>
+            <span id="cart-total-val">$0</span>
+          </div>
+        </div>
+
+        <button id="proceed-to-checkout-btn" class="btn btn-primary" style="width: 100%; padding: 16px;">PROCEED TO CHECKOUT →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div id="search-modal" class="modal-overlay" style="display: none; align-items: flex-start; padding-top: 80px;">
+    <div style="width: 100%; max-width: 700px; background: var(--bg-cream); border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-xl); overflow: hidden;">
+      <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 12px; background: #FFF;">
+        <input id="search-input" type="text" placeholder="Search timepieces, calibres, stories..." style="flex: 1; border: none; outline: none; font-size: 1.1rem; font-family: var(--font-sans); background: transparent;">
+        <button id="search-close-btn" style="padding: 8px; border-radius: 50%; background: var(--bg-primary); cursor: pointer;">✕</button>
+      </div>
+      <div style="max-height: 480px; overflow-y: auto; padding: 24px;">
+        <span class="section-eyebrow" style="margin-bottom: 12px;">TIMEPIECES & ARTICLES</span>
+        <div id="search-results-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Concierge Modal -->
+  <div id="checkout-modal" class="modal-overlay" style="display: none;">
+    <div style="width: 100%; max-width: 800px; max-height: 90vh; background: var(--bg-cream); border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-xl); overflow-y: auto; position: relative; padding: 40px;">
+      <button id="checkout-close-btn" aria-label="Close" style="position: absolute; top: 18px; right: 18px; background: #FFF; border: 1px solid var(--border-light); border-radius: 50%; padding: 6px; cursor: pointer;">✕</button>
+
+      <div id="checkout-form-view">
+        <div style="text-align: center; margin-bottom: 28px;">
+          <span class="section-eyebrow">CONCIERGE CHECKOUT</span>
+          <h2 style="font-size: 2rem; color: var(--color-deep-brown);">Reserve Your Timepiece</h2>
+        </div>
+
+        <form id="checkout-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px;">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <h4 style="font-size: 0.95rem; color: var(--color-deep-brown); border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">1. Collector & Address</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <input type="text" required value="Lord" placeholder="First Name" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF;">
+              <input type="text" required value="Kensington" placeholder="Last Name" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF;">
+            </div>
+            <input type="email" required value="client@arven-horology.ch" placeholder="Email" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF;">
+            <input type="text" required value="42 Rue du Rhône, Geneva" placeholder="Address" style="padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #FFF;">
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <h4 style="font-size: 0.95rem; color: var(--color-deep-brown); border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">2. Payment & Escrow</h4>
+            <div style="background: #FFF; padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+              <input type="text" value="•••• •••• •••• 8841" style="width: 100%; padding: 8px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); margin-bottom: 8px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <input type="text" value="12/28" style="padding: 8px; border: 1px solid var(--border-light); border-radius: var(--radius-sm);">
+                <input type="text" value="784" style="padding: 8px; border: 1px solid var(--border-light); border-radius: var(--radius-sm);">
+              </div>
+            </div>
+
+            <div style="background: var(--bg-secondary); padding: 16px; border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+                <span>Total Items</span>
+                <span id="checkout-item-count">1</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-family: var(--font-serif); font-weight: 700; color: var(--color-deep-brown); border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+                <span>Total</span>
+                <span id="checkout-total-display">$3,450</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="padding: 16px;">
+              <span id="checkout-submit-btn-text">AUTHORIZE COMMISSION</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success View -->
+      <div id="checkout-success-view" style="display: none; text-align: center; padding: 20px 0;">
+        <span class="section-eyebrow">ORDER CONFIRMED</span>
+        <h2 style="font-size: 2.2rem; color: var(--color-deep-brown); margin-bottom: 8px;">Welcome to the ARVÉN Society</h2>
+        <p style="font-size: 0.95rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto 24px auto;">
+          Your bespoke commission <strong id="order-confirmed-num">AV-948201</strong> has been registered at our Le Locle atelier.
+        </p>
+
+        <div style="background: #FFF; border: 1px solid var(--border-gold); border-radius: var(--radius-md); padding: 24px; max-width: 440px; margin: 0 auto 28px auto; text-align: left;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; margin-bottom: 8px;">
+            <span style="font-family: var(--font-serif); font-weight: 700;">ARVÉN GENÈVE</span>
+            <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 600;">CERTIFIED AUTHENTIC</span>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-secondary);">Included 2-Year Swiss Warranty & Global Insured Delivery.</p>
+        </div>
+
+        <button id="checkout-return-btn" class="btn btn-primary">RETURN TO ATELIER</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none;"></div>
+
+  <script type="module" src="/app.js?v=24.0"></script>
+</body>
+</html>
