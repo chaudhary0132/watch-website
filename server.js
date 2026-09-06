@@ -506,15 +506,47 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { success: true, data: updated });
     }
 
+    // --- 8. Admin Authentication API ---
+    if (reqPath === '/api/admin/login' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const username = (body.username || '').trim();
+      const password = (body.password || '').trim();
+
+      // Required credentials:
+      // Username: "ARVINs collections"
+      // Password: "12@arvin"
+      if (username === 'ARVINs collections' && password === '12@arvin') {
+        const token = `arven_sec_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+        console.log(`[Super DB Security] 👑 Director logged in: "${username}" at ${new Date().toLocaleTimeString()}`);
+        return sendJson(res, 200, {
+          success: true,
+          message: 'Director Authenticated Successfully',
+          token,
+          user: {
+            username: 'ARVINs collections',
+            role: 'Atelier Director & Master Connoisseur'
+          }
+        });
+      }
+
+      console.warn(`[Super DB Security] ⚠️ Failed login attempt with username: "${username}"`);
+      return sendJson(res, 401, {
+        success: false,
+        message: 'Invalid Director Credentials. Access Denied.'
+      });
+    }
+
     return sendJson(res, 404, { success: false, message: 'API Endpoint not found' });
   }
 
   // ==========================================
-  // STATIC FILES HANDLER
+  // STATIC FILES HANDLER & URL REWRITES
   // ==========================================
   let cleanPath = reqPath;
   if (cleanPath === '/' || cleanPath === '') {
     cleanPath = '/index.html';
+  } else if (cleanPath === '/admin' || cleanPath === '/admin/') {
+    cleanPath = '/admin.html';
   }
 
   const filePath = path.join(__dirname, cleanPath);

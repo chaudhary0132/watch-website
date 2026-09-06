@@ -430,6 +430,54 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Director Security Clearance Screen */
+    #admin-auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(28, 24, 21, 0.98) 0%, rgba(10, 8, 7, 0.99) 100%);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      backdrop-filter: blur(20px);
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    #admin-auth-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .auth-card {
+      background: #181412;
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 460px;
+      padding: 44px 38px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(212, 175, 55, 0.15);
+      text-align: center;
+      position: relative;
+      animation: authPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes authPopIn {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes shakeAuth {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .shake-error {
+      animation: shakeAuth 0.4s ease !important;
+    }
+
     /* Toast */
     #admin-toast-container {
       position: fixed;
@@ -444,6 +492,73 @@
   </style>
 </head>
 <body>
+
+  <!-- ========================================================
+       DIRECTOR AUTHENTICATION CLEARANCE OVERLAY
+       ======================================================== -->
+  <div id="admin-auth-overlay">
+    <div class="auth-card" id="auth-card-box">
+      <div style="width: 64px; height: 64px; margin: 0 auto 18px auto; border-radius: 50%; border: 1.5px solid var(--border-gold); background: rgba(212, 175, 55, 0.08); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--color-gold); box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);">
+        👑
+      </div>
+
+      <span style="font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold); font-weight: 700; display: block; margin-bottom: 6px;">
+        SECURITY CLEARANCE REQUIRED
+      </span>
+      <h2 style="font-family: var(--font-serif); font-size: 1.65rem; color: #FFF; margin-bottom: 8px; letter-spacing: 0.04em;">
+        ARVÉN Director Portal
+      </h2>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 26px; line-height: 1.5;">
+        Please enter verified Atelier Director credentials to access the management portal.
+      </p>
+
+      <form id="admin-login-form" onsubmit="window.handleAdminLogin(event)">
+        <div style="text-align: left; margin-bottom: 18px;">
+          <label style="display: block; font-size: 0.72rem; font-weight: 700; color: var(--color-gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;">
+            Director Username
+          </label>
+          <div style="position: relative;">
+            <input type="text" id="auth-username" class="form-control" required placeholder="ARVINs collections" value="ARVINs collections" style="padding-left: 38px; height: 46px; font-size: 0.9rem;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: var(--text-muted);">👤</span>
+          </div>
+        </div>
+
+        <div style="text-align: left; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-gold); letter-spacing: 0.1em; text-transform: uppercase;">
+              Director Passcode
+            </label>
+            <span style="font-size: 0.7rem; color: var(--text-muted);">12@arvin</span>
+          </div>
+          <div style="position: relative;">
+            <input type="password" id="auth-password" class="form-control" required placeholder="••••••••" style="padding-left: 38px; padding-right: 40px; height: 46px; font-size: 0.9rem;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: var(--text-muted);">🔒</span>
+            <button type="button" onclick="window.toggleAuthPasswordVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem;">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div id="auth-error-msg" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 18px; color: #FCA5A5; font-size: 0.78rem; text-align: left; align-items: center; gap: 8px;">
+          <span>⚠️</span>
+          <span id="auth-error-text">Invalid Director Credentials. Access Denied.</span>
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="btn-gold" style="width: 100%; justify-content: center; padding: 14px; font-size: 0.84rem; letter-spacing: 0.1em; border-radius: var(--radius-sm); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);">
+          AUTHENTICATE & ENTER PORTAL →
+        </button>
+
+        <div style="margin-top: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+          <a href="index.html" style="color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+            ← Public Boutique
+          </a>
+          <span style="color: rgba(212, 175, 55, 0.6); font-family: var(--font-serif); font-style: italic;">
+            Haute Horlogerie Central
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- ========================================================
        SIDEBAR NAVIGATION
@@ -498,20 +613,30 @@
 
     <div>
       <div style="padding: 16px; background: var(--bg-surface); border: 1px solid var(--border-dark); border-radius: var(--radius-sm); margin-bottom: 16px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-gold); color: #12100E; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
-            HL
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 34px; height: 34px; border-radius: 50%; background: var(--color-gold); color: #12100E; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
+              AC
+            </div>
+            <div>
+              <div style="font-size: 0.82rem; font-weight: 600; color: #FFF;">ARVINs collections</div>
+              <div style="font-size: 0.7rem; color: var(--color-gold);">Atelier Director • Geneva</div>
+            </div>
           </div>
-          <div>
-            <div style="font-size: 0.82rem; font-weight: 600; color: #FFF;">Henri Laurent</div>
-            <div style="font-size: 0.7rem; color: var(--color-gold);">Master Horologist • Geneva</div>
-          </div>
+          <button onclick="window.adminSignOut()" title="Sign Out / Lock Portal" style="background: transparent; border: none; color: #EF4444; cursor: pointer; font-size: 1.1rem; padding: 4px;" onmouseover="this.style.color='#F87171'" onmouseout="this.style.color='#EF4444'">
+            ⎋
+          </button>
         </div>
       </div>
 
-      <a href="index.html" target="_blank" class="btn-outline-gold" style="width: 100%; justify-content: center; text-align: center; font-size: 0.75rem;">
-        VIEW PUBLIC BOUTIQUE ↗
-      </a>
+      <div style="display: flex; gap: 8px;">
+        <a href="index.html" target="_blank" class="btn-outline-gold" style="flex: 1; justify-content: center; text-align: center; font-size: 0.72rem; padding: 8px 10px;">
+          PUBLIC BOUTIQUE ↗
+        </a>
+        <button onclick="window.adminSignOut()" class="btn-outline-gold" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.4); padding: 8px 10px; font-size: 0.72rem;" title="Sign Out">
+          ⎋ LOCK
+        </button>
+      </div>
     </div>
   </aside>
 
@@ -539,6 +664,9 @@
         </button>
         <button class="btn-gold" onclick="window.openAddProductModal()">
           + Add Timepiece
+        </button>
+        <button class="btn-outline-gold" onclick="window.adminSignOut()" style="color: #EF4444; border-color: rgba(239,68,68,0.4); font-size: 0.75rem;" title="Sign Out of Director Portal">
+          ⎋ Sign Out
         </button>
       </div>
     </header>
@@ -1557,10 +1685,132 @@
       });
     }
 
+    // ========================================================
+    // DIRECTOR SECURITY & AUTHENTICATION SYSTEM
+    // ========================================================
+    const REQUIRED_USERNAME = 'ARVINs collections';
+    const REQUIRED_PASSWORD = '12@arvin';
+    const AUTH_STORAGE_KEY = 'arven_director_auth_token';
+
+    function isDirectorAuthenticated() {
+      const token = sessionStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(AUTH_STORAGE_KEY);
+      return Boolean(token && token.startsWith('arven_sec_'));
+    }
+
+    function checkAuthGate() {
+      const overlay = document.getElementById('admin-auth-overlay');
+      if (!overlay) return;
+
+      if (isDirectorAuthenticated()) {
+        overlay.classList.add('hidden');
+      } else {
+        overlay.classList.remove('hidden');
+        const userInp = document.getElementById('auth-username');
+        if (userInp) {
+          userInp.value = 'ARVINs collections';
+        }
+      }
+    }
+
+    window.toggleAuthPasswordVisibility = () => {
+      const passInp = document.getElementById('auth-password');
+      if (!passInp) return;
+      passInp.type = passInp.type === 'password' ? 'text' : 'password';
+    };
+
+    window.handleAdminLogin = async (e) => {
+      e.preventDefault();
+      const username = (document.getElementById('auth-username')?.value || '').trim();
+      const password = (document.getElementById('auth-password')?.value || '').trim();
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const errBox = document.getElementById('auth-error-msg');
+      const errText = document.getElementById('auth-error-text');
+      const authCard = document.getElementById('auth-card-box');
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'VERIFYING CLEARANCE...';
+      }
+
+      try {
+        let authSuccess = false;
+        let authToken = '';
+
+        // 1. Authenticate via Server REST API
+        try {
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+          const json = await res.json();
+          if (res.ok && json.success) {
+            authSuccess = true;
+            authToken = json.token || `arven_sec_${Date.now()}`;
+          }
+        } catch (apiErr) {
+          // Server API fallback if offline
+        }
+
+        // 2. Direct Validation fallback
+        if (!authSuccess && username === REQUIRED_USERNAME && password === REQUIRED_PASSWORD) {
+          authSuccess = true;
+          authToken = `arven_sec_${Date.now()}_local`;
+        }
+
+        if (authSuccess) {
+          sessionStorage.setItem(AUTH_STORAGE_KEY, authToken);
+          localStorage.setItem(AUTH_STORAGE_KEY, authToken);
+
+          if (errBox) errBox.style.display = 'none';
+
+          const overlay = document.getElementById('admin-auth-overlay');
+          if (overlay) overlay.classList.add('hidden');
+
+          window.showAdminToast(`Welcome, Director ${username}! Clearance granted.`);
+          confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 }, colors: ['#D4AF37', '#FFF', '#10B981'] });
+
+          // Synchronize and render portal data
+          await window.syncWithSupabase();
+          drawRevenueChart();
+        } else {
+          if (errBox && errText) {
+            errText.textContent = 'Invalid Director Username or Passcode. Please verify.';
+            errBox.style.display = 'flex';
+          }
+          if (authCard) {
+            authCard.classList.remove('shake-error');
+            void authCard.offsetWidth; // Trigger reflow for shake animation
+            authCard.classList.add('shake-error');
+          }
+          window.showAdminToast('Access Denied: Invalid Credentials', 'error');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'AUTHENTICATE & ENTER PORTAL →';
+        }
+      }
+    };
+
+    window.adminSignOut = () => {
+      if (confirm('Lock Atelier Director Portal and Sign Out?')) {
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        const passInp = document.getElementById('auth-password');
+        if (passInp) passInp.value = '';
+        checkAuthGate();
+        window.showAdminToast('Director session signed out safely.');
+      }
+    };
+
     // Initialize Admin on Load
     window.addEventListener('DOMContentLoaded', async () => {
-      await window.syncWithSupabase();
-      drawRevenueChart();
+      checkAuthGate();
+      if (isDirectorAuthenticated()) {
+        await window.syncWithSupabase();
+        drawRevenueChart();
+      }
       window.addEventListener('resize', drawRevenueChart);
     });
   </script>

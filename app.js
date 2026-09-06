@@ -1148,7 +1148,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Secret Director Admin Shortcut (Ctrl + Shift + A)
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-      window.open('/admin.html', '_blank');
+      window.open('/admin', '_blank');
     }
   });
 });

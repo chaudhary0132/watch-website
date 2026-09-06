@@ -40,8 +40,11 @@ Yeh guide aapko **Supabase ("Super Database")** ko apne ARVÉN Luxury Watches pr
 
 ### Step 4: Connect in Admin Dashboard (1-Click Connection)
 1. Apni website open karein aur **Admin Panel** me jayein:
-   - Direct link: [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
+   - Direct link: [http://localhost:3000/admin](http://localhost:3000/admin) (ya `/admin.html`)
    - Ya website par keyboard shortcut press karein: `Ctrl + Shift + A`
+   - **Director Login Credentials:**
+     - **Username:** `ARVINs collections`
+     - **Password:** `12@arvin`
 2. Top bar me **"Supabase Cloud: Local"** ya sidebar me **"⚡ Supabase Cloud DB"** par click karein.
 3. Modal khulay ga:
    - **Project URL** me paste karein
