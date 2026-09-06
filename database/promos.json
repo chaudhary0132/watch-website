@@ -1,0 +1,5 @@
+[
+  { "code": "ARVEN10", "discount": 10, "target": "VIP Connoisseur Circle", "status": "Active" },
+  { "code": "GENEVA20", "discount": 20, "target": "Salon Private Allocation", "status": "Active" },
+  { "code": "BESPOKE15", "discount": 15, "target": "First Atelier Commission", "status": "Active" }
+]

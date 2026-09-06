@@ -43,8 +43,10 @@
         <a href="#contact" class="btn-text">CONTACT</a>
       </nav>
 
-      <!-- Right Actions -->
-      <div style="display: flex; align-items: center; gap: 16px;">
+        <button id="nav-track-btn" class="btn-text" style="font-size: 0.72rem; letter-spacing: 0.12em; font-weight: 600; padding: 6px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 5px;">
+          <span>TRACK COMMISSION</span>
+        </button>
+
         <button id="nav-search-btn" aria-label="Search" style="color: var(--text-primary); padding: 8px; font-size: 1rem; display: flex; align-items: center;">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
@@ -954,7 +956,58 @@
           <p style="font-size: 0.78rem; color: var(--text-secondary);">Included 2-Year Swiss Warranty & Global Insured Delivery.</p>
         </div>
 
-        <button id="checkout-return-btn" class="btn btn-primary">RETURN TO ATELIER</button>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button id="checkout-track-btn" class="btn btn-outline" style="border-color: var(--color-champagne-gold);">TRACK COMMISSION LIVE</button>
+          <button id="checkout-return-btn" class="btn btn-primary">RETURN TO ATELIER</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: LIVE COMMISSION & ORDER TRACKER
+       ======================================================== -->
+  <div id="tracking-modal" style="display: none; position: fixed; inset: 0; z-index: 990; background: rgba(28, 24, 21, 0.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 24px;">
+    <div style="background: var(--bg-cream); border: 1px solid var(--border-gold); border-radius: var(--radius-lg); width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-2xl); padding: 36px; position: relative;">
+      <button id="tracking-close-btn" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">✕</button>
+      
+      <span class="section-eyebrow">HAUTE HORLOGERIE CONCIERGE</span>
+      <h2 style="font-size: 1.6rem; color: var(--color-deep-brown); margin: 4px 0 16px 0;">Track Bespoke Commission</h2>
+      <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 20px;">
+        Enter your Commission Reference Number (e.g. <code>AV-892104</code>) to query the Geneva Atelier live database.
+      </p>
+
+      <form id="tracking-search-form" style="display: flex; gap: 10px; margin-bottom: 24px;">
+        <input type="text" id="tracking-input-id" placeholder="e.g. AV-892104" required style="flex: 1; padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.08em; background: #FFF;">
+        <button type="submit" class="btn btn-primary" style="padding: 12px 20px; font-size: 0.78rem;">
+          QUERY DATABASE →
+        </button>
+      </form>
+
+      <!-- Tracking Results Card -->
+      <div id="tracking-results-card" style="display: none; background: #FFF; border: 1px solid var(--border-gold); border-radius: var(--radius-md); padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 16px;">
+          <div>
+            <span style="font-size: 0.7rem; color: var(--color-champagne-gold); font-weight: 700; text-transform: uppercase;">COMMISSION DOSSIER</span>
+            <h4 id="track-res-id" style="font-size: 1.2rem; color: var(--color-deep-brown); font-family: var(--font-serif); font-weight: 700;">AV-892104</h4>
+          </div>
+          <span id="track-res-badge" style="background: rgba(212,175,55,0.15); color: var(--color-deep-brown); font-size: 0.72rem; font-weight: 700; padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border-gold);">In Assembly</span>
+        </div>
+
+        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6;">
+          <div><strong>Client:</strong> <span id="track-res-client">Lord Sterling Vance</span></div>
+          <div><strong>Atelier Calibre:</strong> <span id="track-res-item">ARVÉN DIVER TWO-TONE (41mm)</span></div>
+          <div><strong>Total Commission:</strong> <span id="track-res-total" style="color: var(--color-deep-brown); font-weight: 700;">$4,450</span></div>
+          <div><strong>Dispatched via:</strong> <span id="track-res-courier">Armored Courier Service (Geneva ➔ Direct)</span></div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+          <span style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 12px;">ATELIER PROGRESSION TIMELINE</span>
+          <div id="track-timeline-steps" style="display: flex; flex-direction: column; gap: 10px; font-size: 0.78rem;">
+            <!-- Timeline items injected dynamically -->
+          </div>
+        </div>
       </div>
     </div>
   </div>

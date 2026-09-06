@@ -1,12 +1,21 @@
 import * as THREE from 'https://esm.sh/three@0.165.0';
 import { OrbitControls } from 'https://esm.sh/three@0.165.0/examples/jsm/controls/OrbitControls.js';
 import confetti from 'https://esm.sh/canvas-confetti@1.9.3';
+import {
+  fetchProducts,
+  createOrder,
+  createInquiry,
+  validatePromo,
+  subscribeNewsletter,
+  isSupabaseConfigured,
+  INITIAL_PRODUCTS
+} from './supabaseClient.js';
 
 /* ========================================================
    ARVÉN LUXURY TIMEPIECES — DATA STORE
    ======================================================== */
 
-const PRODUCTS = [
+let PRODUCTS = [
   {
     id: 'arven-haute-collection',
     name: 'ARVÉN HAUTE MASTERPIECE COLLECTION',
@@ -1109,7 +1118,17 @@ function createWatch3D(container, options = {}) {
    APPLICATION INITIALIZATION & INTERACTIVITY
    ======================================================== */
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+  // Load live cloud products from Supabase (or fallback)
+  try {
+    const cloudProducts = await fetchProducts();
+    if (cloudProducts && cloudProducts.length > 0) {
+      PRODUCTS = cloudProducts;
+    }
+  } catch (e) {
+    console.warn('Using default product catalog', e);
+  }
+
   initNavbar();
   initHeroSection();
   initSpecialAdditions();
@@ -1124,6 +1143,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initArticleModal();
   initCheckout();
   initContactForm();
+  initOrderTracking();
 
   // Secret Director Admin Shortcut (Ctrl + Shift + A)
   window.addEventListener('keydown', (e) => {
@@ -1621,11 +1641,12 @@ function renderTestimonial() {
 
 /* 8. Newsletter */
 function initNewsletter() {
-  document.getElementById('newsletter-form')?.addEventListener('submit', (e) => {
+  document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = document.getElementById('newsletter-email');
     if (input && input.value) {
-      showToast('Welcome to the ARVÉN Society. Your VIP 10% code is ARVEN10.');
+      await subscribeNewsletter(input.value);
+      showToast('Welcome to the ARVÉN Society. Your VIP 10% privilege code is ARVEN10.');
       input.value = '';
     }
   });
@@ -1681,16 +1702,24 @@ function initCart() {
   document.getElementById('nav-bag-btn')?.addEventListener('click', openCartDrawer);
   document.getElementById('cart-close-btn')?.addEventListener('click', closeCartDrawer);
 
-  document.getElementById('promo-form')?.addEventListener('submit', (e) => {
+  document.getElementById('promo-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const code = document.getElementById('promo-input')?.value.trim().toUpperCase();
-    if (code === 'ARVEN10' || code === 'TIME10') {
+    if (!code) return;
+
+    const validPromo = await validatePromo(code);
+    if (validPromo) {
+      promoDiscount = validPromo.discount / 100;
+      promoCode = validPromo.code;
+      showToast(`VIP Privilege Applied: ${validPromo.discount}% OFF! (${validPromo.code})`);
+      updateCartUI();
+    } else if (code === 'ARVEN10' || code === 'TIME10') {
       promoDiscount = 0.10;
       promoCode = code;
       showToast('VIP Collector 10% privilege applied!');
       updateCartUI();
     } else {
-      showToast('Invalid promotional code.', 'error');
+      showToast('Invalid or expired promotional code.', 'error');
     }
   });
 
@@ -1937,35 +1966,47 @@ window.openArticleModal = (articleId) => {
 function initCheckout() {
   document.getElementById('checkout-close-btn')?.addEventListener('click', closeCheckoutModal);
 
-  document.getElementById('checkout-form')?.addEventListener('submit', (e) => {
+  document.getElementById('checkout-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const orderNum = `AV-${Math.floor(100000 + Math.random() * 900000)}`;
-    document.getElementById('order-confirmed-num').textContent = orderNum;
-
     const firstName = document.getElementById('checkout-first-name')?.value || 'Valued';
     const lastName = document.getElementById('checkout-last-name')?.value || 'Collector';
     const email = document.getElementById('checkout-email')?.value || 'client@arven-vip.ch';
+    const phone = document.getElementById('checkout-phone')?.value || '';
+    const address = document.getElementById('checkout-address')?.value || '';
+    const city = document.getElementById('checkout-city')?.value || '';
+    const country = document.getElementById('checkout-country')?.value || '';
 
     const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     const discount = subtotal * promoDiscount;
     const total = Math.max(0, subtotal - discount);
 
-    const newOrder = {
-      id: orderNum,
-      date: new Date().toISOString(),
-      clientName: `${firstName} ${lastName}`,
-      clientEmail: email,
-      items: [...cart],
-      itemName: cart[0]?.product?.name || 'ARVÉN Timepiece',
-      itemImg: cart[0]?.product?.image || '/images/arven-exact-watch.png',
-      engraving: cart[0]?.customEngraving || '',
+    const orderPayload = {
+      client_name: `${firstName} ${lastName}`.trim(),
+      client_email: email,
+      client_phone: phone,
+      shipping_address: { address, city, country },
+      items: cart.map(i => ({
+        id: i.product.id,
+        name: i.product.name,
+        price: i.product.price,
+        quantity: i.quantity,
+        selectedCase: i.selectedCase,
+        selectedStrap: i.selectedStrap,
+        customEngraving: i.customEngraving,
+        image: i.product.image
+      })),
+      subtotal: subtotal,
+      discount: discount,
+      promo_code: promoCode || null,
       total: total,
+      engraving: cart[0]?.customEngraving || '',
+      strap_choice: cart[0]?.selectedStrap || '',
       status: 'In Assembly'
     };
 
-    const existingOrders = JSON.parse(localStorage.getItem('arven_orders') || '[]');
-    existingOrders.unshift(newOrder);
-    localStorage.setItem('arven_orders', JSON.stringify(existingOrders));
+    const res = await createOrder(orderPayload);
+    const orderNum = res.id || `AV-${Math.floor(100000 + Math.random() * 900000)}`;
+    document.getElementById('order-confirmed-num').textContent = orderNum;
 
     document.getElementById('checkout-form-view').style.display = 'none';
     document.getElementById('checkout-success-view').style.display = 'block';
@@ -2079,32 +2120,35 @@ function initContactForm() {
   const successState = document.getElementById('contact-success-state');
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('contact-fullname')?.value || 'Valued Connoisseur';
     const email = document.getElementById('contact-email')?.value || '';
-    const refNum = `ARV-VIP-${Math.floor(1000 + Math.random() * 9000)}`;
-
-    const refEl = document.getElementById('contact-ref-code');
-    if (refEl) refEl.textContent = `#${refNum}`;
+    const title = document.getElementById('contact-title')?.value || '';
+    const phone = document.getElementById('contact-phone')?.value || 'N/A';
+    const inquiryType = document.getElementById('contact-inquiry-type')?.selectedOptions?.[0]?.textContent || 'Bespoke 3D Commission';
+    const modelInterest = document.getElementById('contact-model-interest')?.selectedOptions?.[0]?.textContent || 'All Timepieces';
+    const message = document.getElementById('contact-message')?.value || '';
+    const videoCall = document.getElementById('contact-video-call')?.checked || false;
+    const catalog = document.getElementById('contact-catalog')?.checked || false;
 
     const newInquiry = {
-      id: refNum,
-      date: new Date().toISOString(),
-      name: `${document.getElementById('contact-title')?.value || ''} ${name}`.trim(),
+      name: `${title} ${name}`.trim(),
       email: email,
-      phone: document.getElementById('contact-phone')?.value || 'N/A',
-      type: document.getElementById('contact-inquiry-type')?.selectedOptions?.[0]?.textContent || 'Bespoke 3D Commission',
-      model: document.getElementById('contact-model-interest')?.selectedOptions?.[0]?.textContent || 'All Timepieces',
-      message: document.getElementById('contact-message')?.value || '',
-      videoCall: document.getElementById('contact-video-call')?.checked || false,
-      catalog: document.getElementById('contact-catalog')?.checked || false,
+      phone: phone,
+      inquiry_type: inquiryType,
+      model_interest: modelInterest,
+      notes: message,
+      video_call: videoCall,
+      catalog_requested: catalog,
       status: 'New'
     };
 
-    const existingInquiries = JSON.parse(localStorage.getItem('arven_inquiries') || '[]');
-    existingInquiries.unshift(newInquiry);
-    localStorage.setItem('arven_inquiries', JSON.stringify(existingInquiries));
+    const res = await createInquiry(newInquiry);
+    const refNum = res.id || `ARV-VIP-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const refEl = document.getElementById('contact-ref-code');
+    if (refEl) refEl.textContent = `#${refNum}`;
 
     form.style.display = 'none';
     if (successState) successState.style.display = 'block';
@@ -2131,3 +2175,100 @@ window.resetContactForm = () => {
     successState.style.display = 'none';
   }
 };
+
+/* 15. Live Commission Order Tracker */
+function initOrderTracking() {
+  const navTrackBtn = document.getElementById('nav-track-btn');
+  const checkoutTrackBtn = document.getElementById('checkout-track-btn');
+  const modal = document.getElementById('tracking-modal');
+  const closeBtn = document.getElementById('tracking-close-btn');
+  const form = document.getElementById('tracking-search-form');
+  const input = document.getElementById('tracking-input-id');
+  const resultsCard = document.getElementById('tracking-results-card');
+
+  const openTracker = (orderId = '') => {
+    if (modal) modal.style.display = 'flex';
+    if (input && orderId) {
+      input.value = orderId;
+      queryOrder(orderId);
+    }
+  };
+
+  navTrackBtn?.addEventListener('click', () => openTracker());
+  checkoutTrackBtn?.addEventListener('click', () => {
+    const num = document.getElementById('order-confirmed-num')?.textContent;
+    document.getElementById('checkout-modal').style.display = 'none';
+    openTracker(num);
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    if (modal) modal.style.display = 'none';
+  });
+
+  async function queryOrder(id) {
+    const cleanId = id.trim().toUpperCase();
+    showToast(`Querying Atelier Database for #${cleanId}...`);
+
+    try {
+      const res = await fetch(`/api/orders/${encodeURIComponent(cleanId)}`);
+      if (res.ok) {
+        const json = await res.json();
+        const o = json.order;
+        if (o) {
+          renderOrderResults(o);
+          return;
+        }
+      }
+    } catch (e) {
+      // offline
+    }
+
+    // Fallback to local
+    const local = JSON.parse(localStorage.getItem('arven_orders') || '[]');
+    const match = local.find(ord => ord.id.toUpperCase() === cleanId);
+    if (match) {
+      renderOrderResults(match);
+    } else {
+      showToast(`Commission #${cleanId} not found in Atelier Archives.`, 'error');
+      if (resultsCard) resultsCard.style.display = 'none';
+    }
+  }
+
+  function renderOrderResults(o) {
+    if (!resultsCard) return;
+    resultsCard.style.display = 'block';
+
+    document.getElementById('track-res-id').textContent = o.id;
+    document.getElementById('track-res-badge').textContent = o.status;
+    document.getElementById('track-res-client').textContent = o.client_name || o.clientName || 'VIP Collector';
+    document.getElementById('track-res-item').textContent = o.itemName || (o.items && o.items[0]?.name) || (o.items && o.items[0]?.product?.name) || 'ARVÉN Calibre';
+    document.getElementById('track-res-total').textContent = `$${(Number(o.total) || 3800).toLocaleString()}`;
+
+    const timelineContainer = document.getElementById('track-timeline-steps');
+    if (timelineContainer) {
+      const steps = [
+        { title: 'Commission Registered & Certified', done: true, time: o.created_at ? new Date(o.created_at).toLocaleDateString() : 'Active' },
+        { title: 'Calibre Hand-Assembly (Le Locle Atelier)', done: o.status !== 'Pending Review' && o.status !== 'Pending Atelier Review', time: 'In Progress' },
+        { title: 'Chronometer Precision & Pressure Testing', done: o.status === 'Quality Inspection' || o.status === 'Dispatched via Armored Courier' || o.status === 'Delivered', time: 'Certified' },
+        { title: 'Armored Diplomatic Courier Dispatch', done: o.status === 'Dispatched via Armored Courier' || o.status === 'Delivered', time: 'Global Logistics' },
+        { title: 'Delivered to Private Residence', done: o.status === 'Delivered', time: 'Completed' }
+      ];
+
+      timelineContainer.innerHTML = steps.map(s => `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: ${s.done ? 'var(--color-champagne-gold)' : '#E5D5C5'}; flex-shrink: 0;"></span>
+          <span style="color: ${s.done ? 'var(--color-deep-brown)' : 'var(--text-muted)'}; font-weight: ${s.done ? '600' : '400'}; flex: 1;">${s.title}</span>
+          <span style="font-size: 0.7rem; color: var(--text-muted);">${s.time}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (input?.value) {
+      queryOrder(input.value);
+    }
+  });
+}
+

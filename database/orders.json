@@ -1,0 +1,44 @@
+[
+  {
+    "id": "AV-892104",
+    "created_at": "2026-02-28T14:30:00Z",
+    "client_name": "Lord Sterling Vance",
+    "client_email": "sterling@vance-holdings.co.uk",
+    "client_phone": "+44 20 7946 0912",
+    "shipping_address": { "address": "4 Berkeley Square", "city": "London", "country": "United Kingdom" },
+    "items": [{ "id": "arven-diver-twotone", "name": "ARVÉN DIVER TWO-TONE", "price": 4450, "quantity": 1, "image": "/images/arven-exact-watch.png" }],
+    "subtotal": 4450,
+    "discount": 0,
+    "total": 4450,
+    "engraving": "SEMPER FIDELIS",
+    "status": "In Assembly"
+  },
+  {
+    "id": "AV-641092",
+    "created_at": "2026-02-27T09:15:00Z",
+    "client_name": "Dr. Marcus Thorne",
+    "client_email": "m.thorne@manhattan-clinic.com",
+    "client_phone": "+1 212 555 0198",
+    "shipping_address": { "address": "740 Park Avenue", "city": "New York", "country": "USA" },
+    "items": [{ "id": "arven-haute-collection", "name": "ARVÉN HAUTE MASTERPIECE (Royal Blue)", "price": 4150, "quantity": 1, "image": "/images/arven-royal-blue.jpg" }],
+    "subtotal": 4150,
+    "discount": 350,
+    "total": 3800,
+    "engraving": "XL ANNIVERSARY",
+    "status": "Pending Atelier Review"
+  },
+  {
+    "id": "AV-418290",
+    "created_at": "2026-02-25T17:45:00Z",
+    "client_name": "Countess Genevieve de Blois",
+    "client_email": "genevieve@chateau-blois.fr",
+    "client_phone": "+33 1 42 68 55 00",
+    "shipping_address": { "address": "12 Place Vendôme", "city": "Paris", "country": "France" },
+    "items": [{ "id": "arven-square-noir", "name": "ARVÉN CARRÉ NOIR STEALTH", "price": 4300, "quantity": 1, "image": "/images/arven-square-noir.jpg" }],
+    "subtotal": 4300,
+    "discount": 0,
+    "total": 4300,
+    "engraving": "ÉTERNITÉ",
+    "status": "Dispatched via Armored Courier"
+  }
+]

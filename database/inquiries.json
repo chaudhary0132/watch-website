@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ARV-VIP-8821",
+    "created_at": "2026-03-01T08:12:00Z",
+    "name": "Arthur Sterling",
+    "email": "arthur.sterling@mayfair-advisors.ch",
+    "phone": "+41 22 819 0044",
+    "inquiry_type": "Bespoke 3D Commission",
+    "model_interest": "ARVÉN DIVER TWO-TONE",
+    "video_call": true,
+    "catalog_requested": true,
+    "status": "New"
+  },
+  {
+    "id": "ARV-VIP-7419",
+    "created_at": "2026-02-28T16:20:00Z",
+    "name": "Baroness Claire von Keller",
+    "email": "claire@keller-capital.de",
+    "phone": "+49 89 2100 440",
+    "inquiry_type": "Private Salon Appointment",
+    "model_interest": "ARVÉN HAUTE MASTERPIECE",
+    "video_call": false,
+    "catalog_requested": true,
+    "status": "Salon Booked"
+  },
+  {
+    "id": "ARV-VIP-5920",
+    "created_at": "2026-02-26T11:05:00Z",
+    "name": "Julian Thorne",
+    "email": "jthorne@geneva-law.ch",
+    "phone": "+41 79 920 4400",
+    "inquiry_type": "Movement Care & Restoration",
+    "model_interest": "ARVÉN GRAND HERITAGE",
+    "video_call": true,
+    "catalog_requested": false,
+    "status": "Director Contacted"
+  }
+]

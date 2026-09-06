@@ -487,6 +487,12 @@
           <span>🎟️</span>
           <span>VIP Privilege Codes</span>
         </button>
+
+        <button class="nav-btn" onclick="window.openSupabaseModal()" style="border: 1px dashed var(--border-gold); margin-top: 10px; background: rgba(212,175,55,0.06);">
+          <span>⚡</span>
+          <span>Supabase Cloud DB</span>
+          <span class="nav-badge" id="badge-supabase-status" style="background: #10B981; color: #12100E; font-size: 0.62rem; font-weight: 800;">READY</span>
+        </button>
       </nav>
     </div>
 
@@ -522,8 +528,14 @@
       </div>
 
       <div class="topbar-actions">
-        <button class="btn-outline-gold" onclick="window.resetAtelierDemoData()">
-          🔄 Sync Atelier Data
+        <!-- Supabase Status Badge -->
+        <button id="supabase-topbar-btn" class="btn-outline-gold" onclick="window.openSupabaseModal()" style="display: flex; align-items: center; gap: 8px; font-size: 0.74rem;">
+          <span id="supabase-topbar-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+          <span id="supabase-topbar-label">Supabase Cloud: Ready</span>
+        </button>
+
+        <button class="btn-outline-gold" onclick="window.syncWithSupabase()">
+          🔄 Sync Database
         </button>
         <button class="btn-gold" onclick="window.openAddProductModal()">
           + Add Timepiece
@@ -892,86 +904,108 @@
     </div>
   </div>
 
+  <!-- ========================================================
+       MODAL: SUPABASE CLOUD DATABASE CONFIGURATION & SEEDER
+       ======================================================== -->
+  <div id="supabase-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-box" style="max-width: 680px;">
+      <button onclick="window.closeSupabaseModal()" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">✕</button>
+      
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+        <span style="font-size: 1.2rem; color: var(--color-gold);">⚡</span>
+        <span style="font-size: 0.72rem; color: var(--color-gold); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">SUPABASE CLOUD DATABASE</span>
+      </div>
+      <h2 style="font-family: var(--font-serif); font-size: 1.6rem; color: #FFF; margin-bottom: 8px;">Super Database Connection</h2>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;">
+        Connect your live Supabase cloud database to synchronize timepieces, client orders, VIP salon inquiries, and privilege codes in real-time across all devices.
+      </p>
+
+      <div id="supabase-status-banner" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span id="supabase-modal-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></span>
+          <span id="supabase-modal-status-text" style="font-size: 0.82rem; font-weight: 600; color: #10B981;">Supabase Cloud Database Ready</span>
+        </div>
+        <button type="button" class="btn-outline-gold" onclick="window.testSupabaseBtn()" style="padding: 4px 12px; font-size: 0.72rem;">
+          ⚡ Test Connection
+        </button>
+      </div>
+
+      <form id="supabase-config-form" onsubmit="window.saveSupabaseSettings(event)">
+        <div class="form-group">
+          <label>Project URL (SUPABASE_URL) *</label>
+          <input type="url" id="input-supabase-url" class="form-control" placeholder="https://your-project.supabase.co" required>
+          <small style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">
+            Found in Supabase Dashboard → Project Settings → API → Project URL
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Anon Public API Key (SUPABASE_ANON_KEY) *</label>
+          <textarea id="input-supabase-key" class="form-control" rows="2" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." required style="font-family: monospace; font-size: 0.75rem; word-break: break-all;"></textarea>
+          <small style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">
+            Found in Supabase Dashboard → Project Settings → API → Project API keys (anon public)
+          </small>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+          <button type="submit" class="btn-gold" style="flex: 1; justify-content: center; padding: 12px;">
+            SAVE & CONNECT SUPABASE
+          </button>
+          <button type="button" class="btn-outline-gold" onclick="window.seedSupabaseBtn()" style="padding: 12px 18px; font-size: 0.78rem;">
+            🌱 Seed Initial Data
+          </button>
+        </div>
+      </form>
+
+      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-dark); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">
+          Database tables: <code>products</code>, <code>orders</code>, <code>inquiries</code>, <code>promos</code>, <code>subscribers</code>
+        </span>
+        <button type="button" onclick="window.disconnectSupabase()" style="background: transparent; border: none; color: #EF4444; font-size: 0.75rem; cursor: pointer; text-decoration: underline;">
+          Disconnect & Revert to Local Storage
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="admin-toast-container"></div>
 
   <!-- ========================================================
-       ADMIN JAVASCRIPT LOGIC
+       ADMIN JAVASCRIPT LOGIC (CONNECTED TO SUPABASE)
        ======================================================== -->
   <script type="module">
-    // Default Fallback Data
-    const INITIAL_PRODUCTS = [
-      { id: 'arven-haute-collection', name: 'ARVÉN HAUTE MASTERPIECE COLLECTION', subtitle: '4 Signature Editions • Bespoke Multi-Tone Metallurgy', price: 3800, size: '40mm', category: 'classic', badge: 'MASTERPIECE 4-IN-1', image: '/images/arven-royal-blue.jpg', specs: { caseDiameter: '40 mm', movement: 'Calibre AV-090 Automatic', glass: 'Double-Domed Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
-      { id: 'arven-diver-twotone', name: 'ARVÉN DIVER TWO-TONE', subtitle: '18k Yellow Gold & 316L Surgical Steel • 41mm Ceramic Bezel', price: 4450, size: '41mm', category: 'diver', badge: 'ATELIER FLAGSHIP', image: '/images/arven-exact-watch.png', specs: { caseDiameter: '41 mm', movement: 'Calibre AV-300 High-Beat Automatic', glass: 'Triple Anti-Reflective Sapphire', waterResistance: '300 Metres (30 ATM)' } },
-      { id: 'arven-hero-wrist-watch', name: 'ARVÉN HERITAGE SLIMLINE', subtitle: 'Ultra-Thin 8.5mm Profile • 39mm 18k Rose Gold Case', price: 3450, size: '39mm', category: 'classic', badge: 'ICONIC SILHOUETTE', image: '/images/arven-hero-wrist.png', specs: { caseDiameter: '39 mm', movement: 'Calibre AV-085 Ultra-Thin Manual Wind', glass: 'Domed Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
-      { id: 'arven-cushion-silver', name: 'ARVÉN CUSHION ULTRA-SLIM', subtitle: 'Monochromatic 39mm • Ultra-Slim 7.8mm', price: 3650, size: '39mm', category: 'classic', badge: 'ATELIER BESPOKE', image: '/images/arven-cushion-silver.jpg', specs: { caseDiameter: '39 mm', movement: 'Calibre AV-090 Ultra-Thin Manual Wind', glass: 'Domed Box Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
-      { id: 'arven-square-noir', name: 'ARVÉN CARRÉ NOIR STEALTH', subtitle: 'Square 40mm Architectural Case • Matte DLC Coating', price: 4300, size: '40mm', category: 'minimalist', badge: 'STEALTH ALLOCATION', image: '/images/arven-square-noir.jpg', specs: { caseDiameter: '40 mm', movement: 'Calibre AV-105 Automatic with Date', glass: 'Sapphire Double-Sided AR', waterResistance: '100 Metres (10 ATM)' } },
-      { id: 'arven-chrono', name: 'ARVÉN CHRONO ROYALE', subtitle: 'Bicompax Chronograph 41mm • Solid Gold Pushers', price: 4200, size: '41mm', category: 'chronograph', badge: 'CHRONOMETRE', image: '/images/arven-twotone-chrono.jpg', specs: { caseDiameter: '41 mm', movement: 'Calibre AV-202 Column-Wheel Chrono', glass: 'Domed Sapphire AR', waterResistance: '100 Metres (10 ATM)' } },
-      { id: 'arven-heritage', name: 'ARVÉN GRAND HERITAGE', subtitle: 'Vintage Art Déco 39mm • Curved Tonneau Silhouette', price: 3800, size: '39mm', category: 'vintage', badge: 'VINTAGE ATELIER', image: '/images/arven-tonneau-deco.jpg', specs: { caseDiameter: '39 mm', movement: 'Calibre AV-090 Ultra-Thin Manual Wind', glass: 'Domed Sapphire Crystal', waterResistance: '50 Metres (5 ATM)' } },
-      { id: 'arven-noir', name: 'ARVÉN NOIR EDITION', subtitle: 'Midnight Edition 41mm • Deep Bronze & Onyx', price: 3950, size: '41mm', category: 'minimalist', badge: 'NEW RELEASE', image: '/images/arven-noir-highres.jpg', specs: { caseDiameter: '41 mm', movement: 'Calibre AV-105 Automatic with Date Window', glass: 'Sapphire Double-Sided Anti-Reflective', waterResistance: '100 Metres (10 ATM)' } }
-    ];
+    import {
+      fetchProducts,
+      saveProduct,
+      deleteProduct,
+      fetchOrders,
+      updateOrderStatus,
+      fetchInquiries,
+      updateInquiryStatus,
+      fetchPromos,
+      savePromo,
+      isSupabaseConfigured,
+      getSupabaseConfig,
+      saveSupabaseConfig,
+      testSupabaseConnection,
+      seedCloudDatabase,
+      INITIAL_PRODUCTS,
+      INITIAL_ORDERS,
+      INITIAL_INQUIRIES,
+      INITIAL_PROMOS
+    } from './supabaseClient.js';
 
-    const INITIAL_ORDERS = [
-      { id: 'AV-892104', date: '2026-02-28T14:30:00Z', clientName: 'Lord Sterling Vance', clientEmail: 'sterling@vance-holdings.co.uk', itemName: 'ARVÉN DIVER TWO-TONE (41mm)', itemImg: '/images/arven-exact-watch.png', engraving: 'SEMPER FIDELIS', total: 4450, status: 'In Assembly' },
-      { id: 'AV-641092', date: '2026-02-27T09:15:00Z', clientName: 'Dr. Marcus Thorne', clientEmail: 'm.thorne@manhattan-clinic.com', itemName: 'ARVÉN HAUTE MASTERPIECE (Royal Blue)', itemImg: '/images/arven-royal-blue.jpg', engraving: 'XL ANNIVERSARY', total: 3800, status: 'Pending Atelier Review' },
-      { id: 'AV-418290', date: '2026-02-25T17:45:00Z', clientName: 'Countess Genevieve de Blois', clientEmail: 'genevieve@chateau-blois.fr', itemName: 'ARVÉN CARRÉ NOIR STEALTH (40mm)', itemImg: '/images/arven-square-noir.jpg', engraving: 'ÉTERNITÉ', total: 4300, status: 'Dispatched via Armored Courier' }
-    ];
-
-    const INITIAL_INQUIRIES = [
-      { id: 'ARV-VIP-8821', date: '2026-03-01T08:12:00Z', name: 'Arthur Sterling', email: 'arthur.sterling@mayfair-advisors.ch', phone: '+41 22 819 0044', type: 'Bespoke 3D Commission', model: 'ARVÉN DIVER TWO-TONE', videoCall: true, catalog: true, status: 'New' },
-      { id: 'ARV-VIP-7419', date: '2026-02-28T16:20:00Z', name: 'Baroness Claire von Keller', email: 'claire@keller-capital.de', phone: '+49 89 2100 440', type: 'Private Salon Appointment', model: 'ARVÉN HAUTE MASTERPIECE', videoCall: false, catalog: true, status: 'Salon Booked' },
-      { id: 'ARV-VIP-5920', date: '2026-02-26T11:05:00Z', name: 'Julian Thorne', email: 'jthorne@geneva-law.ch', phone: '+41 79 920 4400', type: 'Movement Care & Restoration', model: 'ARVÉN GRAND HERITAGE', videoCall: true, catalog: false, status: 'Director Contacted' }
-    ];
-
-    const INITIAL_PROMOS = [
-      { code: 'ARVEN10', discount: 10, target: 'VIP Connoisseur Circle', status: 'Active' },
-      { code: 'GENEVA20', discount: 20, target: 'Salon Private Allocation', status: 'Active' },
-      { code: 'BESPOKE15', discount: 15, target: 'First Atelier Commission', status: 'Active' }
-    ];
-
-    // Data Loaders
-    function getProducts() {
-      return JSON.parse(localStorage.getItem('arven_products')) || INITIAL_PRODUCTS;
-    }
-
-    function saveProducts(data) {
-      localStorage.setItem('arven_products', JSON.stringify(data));
-      renderProductsTable();
-      updateStats();
-    }
-
-    function getOrders() {
-      return JSON.parse(localStorage.getItem('arven_orders')) || INITIAL_ORDERS;
-    }
-
-    function saveOrders(data) {
-      localStorage.setItem('arven_orders', JSON.stringify(data));
-      renderOrdersTable();
-      updateStats();
-    }
-
-    function getInquiries() {
-      return JSON.parse(localStorage.getItem('arven_inquiries')) || INITIAL_INQUIRIES;
-    }
-
-    function saveInquiries(data) {
-      localStorage.setItem('arven_inquiries', JSON.stringify(data));
-      renderInquiriesTable();
-      updateStats();
-    }
-
-    function getPromos() {
-      return JSON.parse(localStorage.getItem('arven_promos')) || INITIAL_PROMOS;
-    }
-
-    function savePromos(data) {
-      localStorage.setItem('arven_promos', JSON.stringify(data));
-      renderPromosTable();
-    }
+    // State Variables
+    let currentProducts = [];
+    let currentOrders = [];
+    let currentInquiries = [];
+    let currentPromos = [];
 
     // UI Toast System
     window.showAdminToast = (msg, type = 'gold') => {
       const c = document.getElementById('admin-toast-container');
+      if (!c) return;
       const t = document.createElement('div');
       t.style.cssText = `
         background: #1C1815;
@@ -987,12 +1021,128 @@
         pointer-events: auto;
         animation: fadeIn 0.3s ease;
       `;
+      const icon = type === 'error' ? '⚠️' : '✦';
+      const iconColor = type === 'error' ? '#EF4444' : 'var(--color-gold)';
       t.innerHTML = `
-        <span style="color: var(--color-gold); font-size: 1rem;">✦</span>
+        <span style="color: ${iconColor}; font-size: 1rem;">${icon}</span>
         <span style="flex: 1;">${msg}</span>
       `;
       c.appendChild(t);
       setTimeout(() => t.remove(), 4000);
+    };
+
+    // Supabase Connection UI Update
+    function updateSupabaseStatusUI() {
+      const configured = isSupabaseConfigured();
+      const dot = document.getElementById('supabase-topbar-dot');
+      const label = document.getElementById('supabase-topbar-label');
+      const badge = document.getElementById('badge-supabase-status');
+      const modalDot = document.getElementById('supabase-modal-dot');
+      const modalText = document.getElementById('supabase-modal-status-text');
+
+      if (configured) {
+        if (dot) dot.style.background = '#10B981';
+        if (label) label.textContent = '🟢 Supabase: Connected';
+        if (badge) {
+          badge.textContent = 'CONNECTED';
+          badge.style.background = '#10B981';
+        }
+        if (modalDot) modalDot.style.background = '#10B981';
+        if (modalText) {
+          modalText.textContent = 'Supabase Cloud Database: Active & Synced';
+          modalText.style.color = '#10B981';
+        }
+      } else {
+        if (dot) dot.style.background = '#E5D5C5';
+        if (label) label.textContent = '⚪ Local Storage Mode';
+        if (badge) {
+          badge.textContent = 'LOCAL';
+          badge.style.background = '#E5D5C5';
+        }
+        if (modalDot) modalDot.style.background = '#F59E0B';
+        if (modalText) {
+          modalText.textContent = 'Offline Mode (Local Storage). Enter Supabase keys to connect cloud.';
+          modalText.style.color = '#F59E0B';
+        }
+      }
+    }
+
+    // Supabase Modal Handlers
+    window.openSupabaseModal = () => {
+      const { url, anonKey } = getSupabaseConfig();
+      const urlInput = document.getElementById('input-supabase-url');
+      const keyInput = document.getElementById('input-supabase-key');
+      if (urlInput) urlInput.value = url || '';
+      if (keyInput) keyInput.value = anonKey || '';
+      updateSupabaseStatusUI();
+      document.getElementById('supabase-modal').style.display = 'flex';
+    };
+
+    window.closeSupabaseModal = () => {
+      document.getElementById('supabase-modal').style.display = 'none';
+    };
+
+    window.saveSupabaseSettings = async (e) => {
+      e.preventDefault();
+      const url = document.getElementById('input-supabase-url').value.trim();
+      const key = document.getElementById('input-supabase-key').value.trim();
+
+      window.showAdminToast('Testing Supabase Cloud Connection...');
+      const test = await testSupabaseConnection(url, key);
+
+      if (test.success) {
+        saveSupabaseConfig(url, key);
+        updateSupabaseStatusUI();
+        window.showAdminToast('Supabase Cloud Database connected successfully!');
+        window.closeSupabaseModal();
+        await window.syncWithSupabase();
+        confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 }, colors: ['#10B981', '#D4AF37', '#FFF'] });
+      } else {
+        saveSupabaseConfig(url, key); // Save anyway
+        updateSupabaseStatusUI();
+        window.showAdminToast(`Notice: ${test.message}`, 'error');
+      }
+    };
+
+    window.testSupabaseBtn = async () => {
+      const url = document.getElementById('input-supabase-url')?.value.trim();
+      const key = document.getElementById('input-supabase-key')?.value.trim();
+      window.showAdminToast('Pinging Supabase endpoints...');
+      const res = await testSupabaseConnection(url, key);
+      if (res.success) {
+        window.showAdminToast(res.message);
+      } else {
+        window.showAdminToast(res.message, 'error');
+      }
+    };
+
+    window.seedSupabaseBtn = async () => {
+      if (!isSupabaseConfigured()) {
+        window.showAdminToast('Please configure Supabase URL and Key first.', 'error');
+        return;
+      }
+      window.showAdminToast('Seeding luxury timepieces, orders, and inquiries to Supabase...');
+      const res = await seedCloudDatabase();
+      if (res.success) {
+        window.showAdminToast(res.message);
+        await window.syncWithSupabase();
+        confetti({ particleCount: 60, spread: 80, origin: { y: 0.6 } });
+      } else {
+        window.showAdminToast(res.message, 'error');
+      }
+    };
+
+    window.disconnectSupabase = () => {
+      if (confirm('Disconnect from Supabase? The admin will fallback to local storage.')) {
+        saveSupabaseConfig('', '');
+        updateSupabaseStatusUI();
+        const urlInput = document.getElementById('input-supabase-url');
+        const keyInput = document.getElementById('input-supabase-key');
+        if (urlInput) urlInput.value = '';
+        if (keyInput) keyInput.value = '';
+        window.showAdminToast('Reverted to Local Storage mode.');
+        window.syncWithSupabase();
+      }
     };
 
     // Tab Switching
@@ -1023,32 +1173,28 @@
 
     // Update Stats & Badges
     function updateStats() {
-      const products = getProducts();
-      const orders = getOrders();
-      const inquiries = getInquiries();
-
-      const totalRev = orders.reduce((sum, o) => sum + (o.total || 0), 164000);
+      const totalRev = currentOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 164000);
       document.getElementById('kpi-revenue').textContent = `$${totalRev.toLocaleString()}`;
-      document.getElementById('kpi-orders-count').textContent = orders.length + 35;
-      document.getElementById('kpi-watches-count').textContent = products.length;
-      document.getElementById('kpi-inquiries-count').textContent = inquiries.length + 11;
+      document.getElementById('kpi-orders-count').textContent = currentOrders.length + 35;
+      document.getElementById('kpi-watches-count').textContent = currentProducts.length;
+      document.getElementById('kpi-inquiries-count').textContent = currentInquiries.length + 11;
 
-      document.getElementById('badge-products-count').textContent = products.length;
-      document.getElementById('badge-orders-count').textContent = orders.length;
-      document.getElementById('badge-inquiries-count').textContent = inquiries.length;
+      document.getElementById('badge-products-count').textContent = currentProducts.length;
+      document.getElementById('badge-orders-count').textContent = currentOrders.length;
+      document.getElementById('badge-inquiries-count').textContent = currentInquiries.length;
     }
 
     // Render Overview Orders
     function renderOverviewOrders() {
       const tbody = document.getElementById('overview-orders-tbody');
-      const orders = getOrders().slice(0, 5);
+      const orders = currentOrders.slice(0, 5);
       tbody.innerHTML = orders.map(o => `
         <tr>
           <td><strong style="color: var(--color-gold); font-family: var(--font-serif);">${o.id}</strong></td>
-          <td>${o.clientName}</td>
-          <td>${o.itemName || (o.items && o.items[0]?.product?.name) || 'ARVÉN Calibre'}</td>
-          <td><strong style="font-family: var(--font-serif); color: #FFF;">$${(o.total || 3800).toLocaleString()}</strong></td>
-          <td><span style="color: var(--text-muted); font-size: 0.75rem;">${new Date(o.date).toLocaleDateString()}</span></td>
+          <td>${o.client_name || o.clientName || 'VIP Collector'}</td>
+          <td>${o.itemName || (o.items && o.items[0]?.name) || (o.items && o.items[0]?.product?.name) || 'ARVÉN Calibre'}</td>
+          <td><strong style="font-family: var(--font-serif); color: #FFF;">$${(Number(o.total) || 3800).toLocaleString()}</strong></td>
+          <td><span style="color: var(--text-muted); font-size: 0.75rem;">${o.created_at ? new Date(o.created_at).toLocaleDateString() : 'Recent'}</span></td>
           <td><span class="status-badge ${o.status === 'Delivered' ? 'status-active' : 'status-gold'}">${o.status}</span></td>
         </tr>
       `).join('');
@@ -1058,32 +1204,32 @@
     window.renderProductsTable = () => {
       const tbody = document.getElementById('products-table-tbody');
       const search = (document.getElementById('search-products')?.value || '').toLowerCase();
-      let products = getProducts();
+      let prods = [...currentProducts];
 
       if (search) {
-        products = products.filter(p => p.name.toLowerCase().includes(search) || p.subtitle?.toLowerCase().includes(search));
+        prods = prods.filter(p => p.name.toLowerCase().includes(search) || p.subtitle?.toLowerCase().includes(search));
       }
 
-      tbody.innerHTML = products.map((p, idx) => `
+      tbody.innerHTML = prods.map((p, idx) => `
         <tr>
           <td>
             <div style="width: 48px; height: 58px; background: #26201C; border-radius: var(--radius-sm); overflow: hidden; display: flex; align-items: center; justify-content: center;">
-              <img src="${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: ${p.image.endsWith('.png') && !p.image.includes('wrist') ? 'contain' : 'cover'};">
+              <img src="${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: ${p.image && p.image.endsWith('.png') && !p.image.includes('wrist') ? 'contain' : 'cover'};">
             </div>
           </td>
           <td>
             <strong style="color: #FFF; font-size: 0.88rem;">${p.name}</strong>
             <div style="color: var(--text-muted); font-size: 0.74rem; margin-top: 2px;">${p.subtitle || ''}</div>
           </td>
-          <td><span style="color: var(--color-gold); font-size: 0.75rem; text-transform: uppercase; font-weight: 600;">${p.category}</span></td>
-          <td><strong style="font-family: var(--font-serif); font-size: 0.95rem; color: var(--color-gold);">$${p.price.toLocaleString()}</strong></td>
+          <td><span style="color: var(--color-gold); font-size: 0.75rem; text-transform: uppercase; font-weight: 600;">${p.category || 'classic'}</span></td>
+          <td><strong style="font-family: var(--font-serif); font-size: 0.95rem; color: var(--color-gold);">$${(Number(p.price) || 0).toLocaleString()}</strong></td>
           <td>${p.size || (p.specs && p.specs.caseDiameter) || '40mm'}</td>
           <td><span style="font-size: 0.76rem; color: var(--text-muted);">${(p.specs && p.specs.movement) || 'Swiss Automatic'}</span></td>
           <td><span class="status-badge status-active">${p.badge || 'IN ATELIER STOCK'}</span></td>
           <td>
             <div style="display: flex; gap: 8px;">
               <button class="btn-outline-gold" onclick="window.editProduct(${idx})" style="padding: 4px 10px; font-size: 0.72rem;">EDIT</button>
-              <button class="btn-outline-gold" onclick="window.deleteProduct(${idx})" style="padding: 4px 10px; font-size: 0.72rem; color: #EF4444; border-color: rgba(239,68,68,0.4);">DELETE</button>
+              <button class="btn-outline-gold" onclick="window.deleteProductHandler('${p.id}')" style="padding: 4px 10px; font-size: 0.72rem; color: #EF4444; border-color: rgba(239,68,68,0.4);">DELETE</button>
             </div>
           </td>
         </tr>
@@ -1099,11 +1245,10 @@
     };
 
     window.editProduct = (idx) => {
-      const products = getProducts();
-      const p = products[idx];
+      const p = currentProducts[idx];
       if (!p) return;
 
-      document.getElementById('form-product-id').value = idx;
+      document.getElementById('form-product-id').value = p.id;
       document.getElementById('form-product-name').value = p.name;
       document.getElementById('form-product-price').value = p.price;
       document.getElementById('form-product-subtitle').value = p.subtitle || '';
@@ -1118,13 +1263,12 @@
       document.getElementById('product-modal').style.display = 'flex';
     };
 
-    window.saveProductForm = (e) => {
+    window.saveProductForm = async (e) => {
       e.preventDefault();
-      const idx = document.getElementById('form-product-id').value;
-      const products = getProducts();
+      const existingId = document.getElementById('form-product-id').value;
 
       const newWatch = {
-        id: idx !== '' ? products[idx].id : `arven-custom-${Date.now()}`,
+        id: existingId || `arven-${Date.now()}`,
         name: document.getElementById('form-product-name').value.trim().toUpperCase(),
         price: parseFloat(document.getElementById('form-product-price').value) || 3950,
         subtitle: document.getElementById('form-product-subtitle').value.trim(),
@@ -1139,32 +1283,26 @@
           glass: 'Sapphire Crystal Anti-Reflective',
           waterResistance: '100 Metres (10 ATM)'
         },
-        colorOptions: [
+        color_options: [
           { id: 'custom-1', name: 'Atelier Primary Metallurgy', shortName: 'Primary', colorHex: '#D4AF37', accentHex: '#181716', price: parseFloat(document.getElementById('form-product-price').value) || 3950, image: document.getElementById('form-product-image').value.trim() }
         ]
       };
 
-      if (idx !== '') {
-        products[idx] = { ...products[idx], ...newWatch };
-        window.showAdminToast(`Updated ${newWatch.name} in Atelier catalog.`);
-      } else {
-        products.unshift(newWatch);
-        window.showAdminToast(`Commissioned new timepiece: ${newWatch.name}`);
-      }
-
-      saveProducts(products);
+      window.showAdminToast(`Saving ${newWatch.name}...`);
+      await saveProduct(newWatch);
       document.getElementById('product-modal').style.display = 'none';
 
+      await window.syncWithSupabase();
+      window.showAdminToast(`Timepiece saved: ${newWatch.name}`);
       confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 }, colors: ['#D4AF37', '#FFF', '#26201C'] });
     };
 
-    window.deleteProduct = (idx) => {
-      const products = getProducts();
-      const p = products[idx];
-      if (confirm(`Are you sure you want to remove "${p.name}" from public atelier allocations?`)) {
-        products.splice(idx, 1);
-        saveProducts(products);
-        window.showAdminToast(`Archived ${p.name}`);
+    window.deleteProductHandler = async (id) => {
+      const p = currentProducts.find(prod => prod.id === id);
+      if (confirm(`Are you sure you want to remove "${p ? p.name : id}" from public atelier allocations?`)) {
+        await deleteProduct(id);
+        await window.syncWithSupabase();
+        window.showAdminToast(`Archived timepiece.`);
       }
     };
 
@@ -1172,7 +1310,7 @@
     window.renderOrdersTable = () => {
       const tbody = document.getElementById('orders-table-tbody');
       const filter = document.getElementById('filter-order-status')?.value || 'ALL';
-      let orders = getOrders();
+      let orders = [...currentOrders];
 
       if (filter !== 'ALL') {
         orders = orders.filter(o => o.status === filter);
@@ -1182,14 +1320,14 @@
         <tr>
           <td><strong style="color: var(--color-gold); font-family: var(--font-serif);">${o.id}</strong></td>
           <td>
-            <strong style="color: #FFF;">${o.clientName}</strong>
-            <div style="font-size: 0.72rem; color: var(--text-muted);">${o.clientEmail}</div>
+            <strong style="color: #FFF;">${o.client_name || o.clientName || 'VIP Client'}</strong>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">${o.client_email || o.clientEmail || ''}</div>
           </td>
           <td>
             <div style="display: flex; align-items: center; gap: 10px;">
-              <img src="${o.itemImg || (o.items && o.items[0]?.product?.image) || '/images/arven-exact-watch.png'}" style="width: 36px; height: 44px; object-fit: contain; background: #26201C; border-radius: var(--radius-sm);">
+              <img src="${o.itemImg || (o.items && o.items[0]?.image) || (o.items && o.items[0]?.product?.image) || '/images/arven-exact-watch.png'}" style="width: 36px; height: 44px; object-fit: contain; background: #26201C; border-radius: var(--radius-sm);">
               <div>
-                <div style="font-weight: 600; font-size: 0.82rem;">${o.itemName || (o.items && o.items[0]?.product?.name) || 'ARVÉN Calibre'}</div>
+                <div style="font-weight: 600; font-size: 0.82rem;">${o.itemName || (o.items && o.items[0]?.name) || (o.items && o.items[0]?.product?.name) || 'ARVÉN Calibre'}</div>
                 <div style="font-size: 0.72rem; color: var(--text-muted);">${(o.items && o.items[0]?.selectedCase) || '18k Gold Finish'}</div>
               </div>
             </div>
@@ -1197,9 +1335,9 @@
           <td>
             ${o.engraving ? `<span style="color: var(--color-gold); font-style: italic; font-size: 0.75rem;">“${o.engraving}”</span>` : '<span style="color: var(--text-muted); font-size: 0.72rem;">None</span>'}
           </td>
-          <td><strong style="font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold);">$${(o.total || 4200).toLocaleString()}</strong></td>
+          <td><strong style="font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold);">$${(Number(o.total) || 4200).toLocaleString()}</strong></td>
           <td>
-            <select class="form-control" style="padding: 6px 10px; font-size: 0.75rem;" onchange="window.updateOrderStatus(${idx}, this.value)">
+            <select class="form-control" style="padding: 6px 10px; font-size: 0.75rem;" onchange="window.updateOrderStatusHandler('${o.id}', this.value)">
               <option value="Pending Atelier Review" ${o.status === 'Pending Atelier Review' ? 'selected' : ''}>Pending Review</option>
               <option value="In Assembly" ${o.status === 'In Assembly' ? 'selected' : ''}>In Assembly</option>
               <option value="Quality Inspection" ${o.status === 'Quality Inspection' ? 'selected' : ''}>Quality Inspection</option>
@@ -1214,33 +1352,32 @@
       `).join('');
     };
 
-    window.updateOrderStatus = (idx, newStatus) => {
-      const orders = getOrders();
-      orders[idx].status = newStatus;
-      saveOrders(orders);
-      window.showAdminToast(`Updated order ${orders[idx].id} status to: ${newStatus}`);
+    window.updateOrderStatusHandler = async (orderId, newStatus) => {
+      await updateOrderStatus(orderId, newStatus);
+      await window.syncWithSupabase();
+      window.showAdminToast(`Updated order ${orderId} status to: ${newStatus}`);
     };
 
     // Render Inquiries Table
     window.renderInquiriesTable = () => {
       const tbody = document.getElementById('inquiries-table-tbody');
-      const inquiries = getInquiries();
+      const inquiries = [...currentInquiries];
 
       tbody.innerHTML = inquiries.map((iq, idx) => `
         <tr>
           <td><strong style="color: var(--color-gold); font-family: var(--font-serif);">${iq.id}</strong></td>
           <td>
             <strong style="color: #FFF;">${iq.name}</strong>
-            <div style="font-size: 0.72rem; color: var(--text-muted);">${iq.email} • ${iq.phone}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">${iq.email} • ${iq.phone || 'N/A'}</div>
           </td>
-          <td><span style="color: var(--color-gold); font-weight: 600; font-size: 0.78rem;">${iq.type}</span></td>
-          <td><span style="font-size: 0.8rem;">${iq.model}</span></td>
+          <td><span style="color: var(--color-gold); font-weight: 600; font-size: 0.78rem;">${iq.inquiry_type || iq.type || 'Consultation'}</span></td>
+          <td><span style="font-size: 0.8rem;">${iq.model_interest || iq.model || 'All Timepieces'}</span></td>
           <td>
-            ${iq.videoCall ? '<span class="status-badge status-gold" style="margin-right: 4px;">📹 Video Call</span>' : ''}
-            ${iq.catalog ? '<span class="status-badge status-new">📖 Catalog</span>' : ''}
+            ${(iq.video_call ?? iq.videoCall) ? '<span class="status-badge status-gold" style="margin-right: 4px;">📹 Video Call</span>' : ''}
+            ${(iq.catalog_requested ?? iq.catalog) ? '<span class="status-badge status-new">📖 Catalog</span>' : ''}
           </td>
           <td>
-            <select class="form-control" style="padding: 6px 10px; font-size: 0.75rem;" onchange="window.updateInquiryStatus(${idx}, this.value)">
+            <select class="form-control" style="padding: 6px 10px; font-size: 0.75rem;" onchange="window.updateInquiryStatusHandler('${iq.id}', this.value)">
               <option value="New" ${iq.status === 'New' ? 'selected' : ''}>New Request</option>
               <option value="Director Contacted" ${iq.status === 'Director Contacted' ? 'selected' : ''}>Director Contacted</option>
               <option value="Salon Booked" ${iq.status === 'Salon Booked' ? 'selected' : ''}>Salon Booked</option>
@@ -1254,11 +1391,10 @@
       `).join('');
     };
 
-    window.updateInquiryStatus = (idx, newStatus) => {
-      const inquiries = getInquiries();
-      inquiries[idx].status = newStatus;
-      saveInquiries(inquiries);
-      window.showAdminToast(`Inquiry ${inquiries[idx].id} marked as: ${newStatus}`);
+    window.updateInquiryStatusHandler = async (inquiryId, newStatus) => {
+      await updateInquiryStatus(inquiryId, newStatus);
+      await window.syncWithSupabase();
+      window.showAdminToast(`Inquiry ${inquiryId} marked as: ${newStatus}`);
     };
 
     // Render Journal Table
@@ -1295,58 +1431,65 @@
     // Render Promo Codes Table
     window.renderPromosTable = () => {
       const tbody = document.getElementById('promos-table-tbody');
-      const promos = getPromos();
+      const promos = [...currentPromos];
 
       tbody.innerHTML = promos.map((p, idx) => `
         <tr>
           <td><strong style="font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold);">${p.code}</strong></td>
           <td><span class="status-badge status-gold">${p.discount}% OFF</span></td>
-          <td>${p.target}</td>
-          <td><span class="status-badge status-active">${p.status}</span></td>
+          <td>${p.target || 'VIP Allocation'}</td>
+          <td><span class="status-badge status-active">${p.status || 'Active'}</span></td>
           <td>
-            <button class="btn-outline-gold" onclick="window.deletePromo(${idx})" style="padding: 4px 8px; font-size: 0.7rem; color: #EF4444; border-color: rgba(239,68,68,0.4);">ARCHIVE</button>
+            <button class="btn-outline-gold" onclick="window.deletePromoHandler('${p.code}')" style="padding: 4px 8px; font-size: 0.7rem; color: #EF4444; border-color: rgba(239,68,68,0.4);">ARCHIVE</button>
           </td>
         </tr>
       `).join('');
     };
 
-    window.openAddPromoModal = () => {
+    window.openAddPromoModal = async () => {
       const code = prompt('Enter New VIP Privilege Code Name (e.g. MONACO25):');
       if (!code) return;
       const rate = prompt('Enter Discount Percentage (e.g. 15):', '15');
       if (!rate) return;
 
-      const promos = getPromos();
-      promos.unshift({
+      const newPromo = {
         code: code.trim().toUpperCase(),
         discount: parseInt(rate) || 15,
         target: 'Custom VIP Allocation',
         status: 'Active'
-      });
-      savePromos(promos);
+      };
+
+      await savePromo(newPromo);
+      await window.syncWithSupabase();
       window.showAdminToast(`Created Privilege Code: ${code.toUpperCase()} (${rate}% OFF)`);
     };
 
-    window.deletePromo = (idx) => {
-      const promos = getPromos();
-      promos.splice(idx, 1);
-      savePromos(promos);
+    window.deletePromoHandler = async (code) => {
+      const updated = currentPromos.filter(p => p.code !== code);
+      localStorage.setItem('arven_promos', JSON.stringify(updated));
+      await window.syncWithSupabase();
       window.showAdminToast('Archived Promo Code.');
     };
 
-    // Reset Demo Data
-    window.resetAtelierDemoData = () => {
-      localStorage.setItem('arven_products', JSON.stringify(INITIAL_PRODUCTS));
-      localStorage.setItem('arven_orders', JSON.stringify(INITIAL_ORDERS));
-      localStorage.setItem('arven_inquiries', JSON.stringify(INITIAL_INQUIRIES));
-      localStorage.setItem('arven_promos', JSON.stringify(INITIAL_PROMOS));
-      renderProductsTable();
-      renderOrdersTable();
-      renderInquiriesTable();
-      renderPromosTable();
-      renderOverviewOrders();
-      updateStats();
-      window.showAdminToast('Atelier Data synchronized with Geneva Mainframe.');
+    // Synchronize Data with Supabase / Cache
+    window.syncWithSupabase = async () => {
+      try {
+        currentProducts = await fetchProducts();
+        currentOrders = await fetchOrders();
+        currentInquiries = await fetchInquiries();
+        currentPromos = await fetchPromos();
+
+        updateStats();
+        renderOverviewOrders();
+        renderProductsTable();
+        renderOrdersTable();
+        renderInquiriesTable();
+        renderJournalTable();
+        renderPromosTable();
+        updateSupabaseStatusUI();
+      } catch (err) {
+        console.warn('Sync error:', err);
+      }
     };
 
     // Simple Luxury Canvas Revenue Graph
@@ -1414,17 +1557,10 @@
       });
     }
 
-    // Initialize Admin
-    window.addEventListener('DOMContentLoaded', () => {
-      updateStats();
-      renderOverviewOrders();
-      renderProductsTable();
-      renderOrdersTable();
-      renderInquiriesTable();
-      renderJournalTable();
-      renderPromosTable();
+    // Initialize Admin on Load
+    window.addEventListener('DOMContentLoaded', async () => {
+      await window.syncWithSupabase();
       drawRevenueChart();
-
       window.addEventListener('resize', drawRevenueChart);
     });
   </script>
