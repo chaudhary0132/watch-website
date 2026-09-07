@@ -12,7 +12,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/src/index.css">
+  <script>
+    // Universal Instant Admin Route Handler
+    if (window.location.pathname === '/admin' || window.location.pathname === '/admin/' || window.location.pathname.endsWith('/admin')) {
+      window.location.replace('/admin.html');
+    }
+  </script>
 
   <style>
     .active-option {
@@ -750,6 +755,10 @@
       <div style="padding-top: 24px; border-top: 1px solid rgba(201, 169, 139, 0.2); display: flex; justify-content: space-between; font-size: 0.75rem; color: #A39386; flex-wrap: wrap; gap: 12px; align-items: center;">
         <div>© 2026 ARVÉN. All Rights Reserved. Haute Horlogerie Genève.</div>
         <div style="display: flex; gap: 20px; align-items: center;">
+          <a href="/admin.html" style="color: var(--color-champagne-gold); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+            <span>👑</span>
+            <span>Director Portal</span>
+          </a>
           <span>Privacy Policy</span>
           <span>Terms of Service</span>
         </div>
