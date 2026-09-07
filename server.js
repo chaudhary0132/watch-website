@@ -89,7 +89,85 @@ createBackupSnapshot();
 setInterval(createBackupSnapshot, 60 * 60 * 1000);
 
 // ========================================================
-// 3. REST API HELPERS & VALIDATION
+// 3. GOHIGHLEVEL (GHL) CRM INTEGRATION ENGINE
+// ========================================================
+async function syncToGHL(eventType, payload) {
+  const config = readDb('config.json', {});
+  const locationId = process.env.GHL_LOCATION_ID || config.ghl_location_id || 'FZk2lJCGtgBs4vri470h';
+  const apiKey = process.env.GHL_API_KEY || config.ghl_api_key || '';
+  const webhookUrl = process.env.GHL_WEBHOOK_URL || config.ghl_webhook_url || '';
+
+  console.log(`[GoHighLevel CRM] ⚡ Triggered event "${eventType}" for Location: ${locationId}`);
+
+  // 1. Webhook Dispatch (Instant Trigger for GHL Automations)
+  if (webhookUrl) {
+    try {
+      const resp = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'ARVÉN Luxury Timepieces',
+          eventType,
+          locationId,
+          timestamp: new Date().toISOString(),
+          data: payload
+        })
+      });
+      console.log(`[GoHighLevel Webhook] ✅ Dispatched ${eventType} -> HTTP ${resp.status}`);
+    } catch (err) {
+      console.error(`[GoHighLevel Webhook Error]:`, err.message);
+    }
+  }
+
+  // 2. Direct GoHighLevel REST API Dispatch
+  if (apiKey) {
+    try {
+      let contactData = { locationId };
+      if (eventType === 'NEW_ORDER') {
+        const parts = (payload.client_name || '').trim().split(' ');
+        contactData.firstName = parts[0] || 'VIP';
+        contactData.lastName = parts.slice(1).join(' ') || 'Client';
+        contactData.name = payload.client_name;
+        contactData.email = payload.client_email;
+        contactData.phone = payload.client_phone;
+        contactData.tags = ['ARVEN-CUSTOMER', 'VIP-COMMISSION', `ORDER-${payload.id}`];
+        contactData.customFields = [
+          { key: 'order_id', field_value: payload.id },
+          { key: 'order_total', field_value: `$${payload.total}` }
+        ];
+      } else if (eventType === 'VIP_INQUIRY') {
+        const parts = (payload.name || '').trim().split(' ');
+        contactData.firstName = parts[0] || 'VIP';
+        contactData.lastName = parts.slice(1).join(' ') || 'Connoisseur';
+        contactData.name = payload.name;
+        contactData.email = payload.email;
+        contactData.phone = payload.phone;
+        contactData.tags = ['ARVEN-SALON-INQUIRY', payload.inquiry_type || 'VIP-Bespoke'];
+      } else if (eventType === 'NEWSLETTER') {
+        contactData.email = payload.email;
+        contactData.tags = ['ARVEN-NEWSLETTER-SUBSCRIBER'];
+      }
+
+      if (contactData.email || contactData.phone) {
+        const ghlRes = await fetch('https://services.leadconnectorhq.com/contacts/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'Version': '2021-07-28'
+          },
+          body: JSON.stringify(contactData)
+        });
+        console.log(`[GoHighLevel API] ✅ Contact synced to Location ${locationId} -> HTTP ${ghlRes.status}`);
+      }
+    } catch (err) {
+      console.error(`[GoHighLevel API Error]:`, err.message);
+    }
+  }
+}
+
+// ========================================================
+// 4. REST API HELPERS & VALIDATION
 // ========================================================
 function parseBody(req) {
   return new Promise((resolve) => {
@@ -330,6 +408,9 @@ const server = http.createServer(async (req, res) => {
       writeDbAtomic('orders.json', orders);
       console.log(`[Super DB] ✨ Commission Registered: #${newOrder.id} | Total: $${newOrder.total} | Client: ${newOrder.client_name}`);
 
+      // Auto-sync to GoHighLevel CRM
+      syncToGHL('NEW_ORDER', newOrder);
+
       return sendJson(res, 201, { success: true, data: newOrder, id: newOrder.id });
     }
 
@@ -386,6 +467,9 @@ const server = http.createServer(async (req, res) => {
       inquiries.unshift(newInquiry);
       writeDbAtomic('inquiries.json', inquiries);
       console.log(`[Super DB] ✉️ VIP Salon Dossier: #${newInquiry.id} from ${newInquiry.name}`);
+
+      // Auto-sync to GoHighLevel CRM
+      syncToGHL('VIP_INQUIRY', newInquiry);
 
       return sendJson(res, 201, { success: true, data: newInquiry, id: newInquiry.id });
     }
@@ -466,6 +550,7 @@ const server = http.createServer(async (req, res) => {
           subscribers.push({ email, created_at: new Date().toISOString() });
           writeDbAtomic('subscribers.json', subscribers);
         }
+        syncToGHL('NEWSLETTER', { email });
         return sendJson(res, 200, { success: true, message: 'Subscribed to ARVÉN Society' });
       }
       return sendJson(res, 400, { success: false, message: 'Valid email required' });
@@ -493,7 +578,10 @@ const server = http.createServer(async (req, res) => {
         data: {
           ...config,
           env_supabase_url: process.env.SUPABASE_URL || '',
-          env_supabase_key: process.env.SUPABASE_ANON_KEY ? '••••••••' : ''
+          env_supabase_key: process.env.SUPABASE_ANON_KEY ? '••••••••' : '',
+          ghl_location_id: process.env.GHL_LOCATION_ID || config.ghl_location_id || 'FZk2lJCGtgBs4vri470h',
+          ghl_webhook_url: process.env.GHL_WEBHOOK_URL || config.ghl_webhook_url || '',
+          has_ghl_key: Boolean(process.env.GHL_API_KEY || config.ghl_api_key)
         }
       });
     }
@@ -533,6 +621,51 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 401, {
         success: false,
         message: 'Invalid Director Credentials. Access Denied.'
+      });
+    }
+
+    // --- 9. GoHighLevel (GHL) Dedicated API ---
+    if (reqPath === '/api/ghl/config' && req.method === 'GET') {
+      const config = readDb('config.json', {});
+      return sendJson(res, 200, {
+        success: true,
+        data: {
+          location_id: process.env.GHL_LOCATION_ID || config.ghl_location_id || 'FZk2lJCGtgBs4vri470h',
+          webhook_url: process.env.GHL_WEBHOOK_URL || config.ghl_webhook_url || '',
+          has_api_key: Boolean(process.env.GHL_API_KEY || config.ghl_api_key)
+        }
+      });
+    }
+
+    if (reqPath === '/api/ghl/config' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const config = readDb('config.json', {});
+      const updated = {
+        ...config,
+        ghl_location_id: body.location_id || body.locationId || config.ghl_location_id || 'FZk2lJCGtgBs4vri470h',
+        ghl_webhook_url: body.webhook_url || body.webhookUrl || config.ghl_webhook_url || '',
+        ghl_api_key: body.api_key || body.apiKey || config.ghl_api_key || '',
+        updated_at: new Date().toISOString()
+      };
+      writeDbAtomic('config.json', updated);
+      console.log(`[GoHighLevel Config] Settings updated: Location ID = ${updated.ghl_location_id}`);
+      return sendJson(res, 200, { success: true, message: 'GoHighLevel settings updated', data: updated });
+    }
+
+    if (reqPath === '/api/ghl/test' && req.method === 'POST') {
+      const testPayload = {
+        id: `TEST-${Math.floor(1000 + Math.random() * 9000)}`,
+        client_name: 'ARVÉN VIP Connoisseur (Test Ping)',
+        client_email: 'vip.test@arven-geneva.ch',
+        client_phone: '+41 22 819 9000',
+        total: 4200,
+        model: 'Royal Tourbillon 40mm'
+      };
+      await syncToGHL('TEST_PING', testPayload);
+      return sendJson(res, 200, {
+        success: true,
+        message: 'Test event dispatched to GoHighLevel CRM.',
+        locationId: process.env.GHL_LOCATION_ID || 'FZk2lJCGtgBs4vri470h'
       });
     }
 

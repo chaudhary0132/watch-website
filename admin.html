@@ -608,6 +608,12 @@
           <span>Supabase Cloud DB</span>
           <span class="nav-badge" id="badge-supabase-status" style="background: #10B981; color: #12100E; font-size: 0.62rem; font-weight: 800;">READY</span>
         </button>
+
+        <button class="nav-btn" onclick="window.openGHLModal()" style="border: 1px dashed rgba(59, 130, 246, 0.4); margin-top: 6px; background: rgba(59, 130, 246, 0.08);">
+          <span>🚀</span>
+          <span>GoHighLevel CRM</span>
+          <span class="nav-badge" id="badge-ghl-status" style="background: #3B82F6; color: #FFF; font-size: 0.62rem; font-weight: 800;">ACTIVE</span>
+        </button>
       </nav>
     </div>
 
@@ -657,6 +663,12 @@
         <button id="supabase-topbar-btn" class="btn-outline-gold" onclick="window.openSupabaseModal()" style="display: flex; align-items: center; gap: 8px; font-size: 0.74rem;">
           <span id="supabase-topbar-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
           <span id="supabase-topbar-label">Supabase Cloud: Ready</span>
+        </button>
+
+        <!-- GoHighLevel Status Badge -->
+        <button id="ghl-topbar-btn" class="btn-outline-gold" onclick="window.openGHLModal()" style="display: flex; align-items: center; gap: 8px; font-size: 0.74rem; border-color: rgba(59, 130, 246, 0.4); color: #93C5FD;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #3B82F6; display: inline-block;"></span>
+          <span>GHL: FZk2lJCGtg...</span>
         </button>
 
         <button class="btn-outline-gold" onclick="window.syncWithSupabase()">
@@ -1096,6 +1108,66 @@
     </div>
   </div>
 
+  <!-- ========================================================
+       MODAL: GOHIGHLEVEL CRM INTEGRATION
+       ======================================================== -->
+  <div id="ghl-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-box" style="max-width: 680px;">
+      <button onclick="window.closeGHLModal()" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">✕</button>
+      
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+        <span style="font-size: 1.2rem; color: #3B82F6;">🚀</span>
+        <span style="font-size: 0.72rem; color: #60A5FA; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">CRM & MARKETING AUTOMATION</span>
+      </div>
+      <h2 style="font-family: var(--font-serif); font-size: 1.6rem; color: #FFF; margin-bottom: 8px;">GoHighLevel CRM Integration</h2>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;">
+        Synchronize client orders, VIP Salon inquiries, and newsletter leads automatically into your GoHighLevel CRM Location pipelines and contacts.
+      </p>
+
+      <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #3B82F6;"></span>
+          <span style="font-size: 0.82rem; font-weight: 600; color: #93C5FD;">Location: <code>FZk2lJCGtgBs4vri470h</code></span>
+        </div>
+        <a href="https://app.gohighlevel.com/v2/location/FZk2lJCGtgBs4vri470h/dashboard" target="_blank" class="btn-outline-gold" style="padding: 4px 12px; font-size: 0.72rem; color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">
+          Open GHL Dashboard ↗
+        </a>
+      </div>
+
+      <form id="ghl-config-form" onsubmit="window.saveGHLSettings(event)">
+        <div class="form-group">
+          <label>Location ID *</label>
+          <input type="text" id="input-ghl-location" class="form-control" value="FZk2lJCGtgBs4vri470h" required placeholder="FZk2lJCGtgBs4vri470h">
+        </div>
+
+        <div class="form-group">
+          <label>Inbound Webhook URL (Recommended)</label>
+          <input type="url" id="input-ghl-webhook" class="form-control" placeholder="https://services.leadconnectorhq.com/hooks/...">
+          <small style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">
+            GHL Dashboard → Automation → Workflows → Inbound Webhook Trigger URL
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>API Key / Private Access Token (Optional)</label>
+          <input type="password" id="input-ghl-key" class="form-control" placeholder="GHL API Key or Private Integration Token">
+          <small style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">
+            GHL Dashboard → Settings → Business Profile → General Info / Developers
+          </small>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+          <button type="submit" class="btn-gold" style="flex: 1; justify-content: center; padding: 12px;">
+            SAVE GOHIGHLEVEL CONFIG
+          </button>
+          <button type="button" class="btn-outline-gold" onclick="window.testGHLBtn()" style="padding: 12px 18px; font-size: 0.78rem;">
+            ⚡ Send Test Ping
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="admin-toast-container"></div>
 
@@ -1270,6 +1342,69 @@
         if (keyInput) keyInput.value = '';
         window.showAdminToast('Reverted to Local Storage mode.');
         window.syncWithSupabase();
+      }
+    };
+
+    // GoHighLevel CRM Modal Handlers
+    window.openGHLModal = async () => {
+      try {
+        const res = await fetch('/api/ghl/config');
+        const json = await res.json();
+        if (json.success && json.data) {
+          const locInp = document.getElementById('input-ghl-location');
+          const webInp = document.getElementById('input-ghl-webhook');
+          if (locInp) locInp.value = json.data.location_id || 'FZk2lJCGtgBs4vri470h';
+          if (webInp) webInp.value = json.data.webhook_url || '';
+        }
+      } catch (err) {
+        console.warn('GHL config fetch error:', err);
+      }
+      document.getElementById('ghl-modal').style.display = 'flex';
+    };
+
+    window.closeGHLModal = () => {
+      document.getElementById('ghl-modal').style.display = 'none';
+    };
+
+    window.saveGHLSettings = async (e) => {
+      e.preventDefault();
+      const location_id = document.getElementById('input-ghl-location').value.trim();
+      const webhook_url = document.getElementById('input-ghl-webhook').value.trim();
+      const api_key = document.getElementById('input-ghl-key').value.trim();
+
+      window.showAdminToast('Saving GoHighLevel CRM settings...');
+      try {
+        const res = await fetch('/api/ghl/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ location_id, webhook_url, api_key })
+        });
+        const json = await res.json();
+        if (json.success) {
+          window.showAdminToast('GoHighLevel CRM settings saved successfully!');
+          window.closeGHLModal();
+          confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, colors: ['#3B82F6', '#D4AF37', '#FFF'] });
+        } else {
+          window.showAdminToast(json.message || 'Error saving settings', 'error');
+        }
+      } catch (err) {
+        window.showAdminToast('Error connecting to server', 'error');
+      }
+    };
+
+    window.testGHLBtn = async () => {
+      window.showAdminToast('Dispatching test ping to GoHighLevel...');
+      try {
+        const res = await fetch('/api/ghl/test', { method: 'POST' });
+        const json = await res.json();
+        if (json.success) {
+          window.showAdminToast(`⚡ Test Ping Sent to Location: ${json.locationId}!`);
+          confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+        } else {
+          window.showAdminToast('Test ping failed', 'error');
+        }
+      } catch (err) {
+        window.showAdminToast('Error communicating with server', 'error');
       }
     };
 
