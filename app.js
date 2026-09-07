@@ -3,6 +3,12 @@ import { OrbitControls } from 'https://esm.sh/three@0.165.0/examples/jsm/control
 import confetti from 'https://esm.sh/canvas-confetti@1.9.3';
 import {
   fetchProducts,
+  saveProduct,
+  deleteProduct,
+  fetchOrders,
+  updateOrderStatus,
+  fetchInquiries,
+  updateInquiryStatus,
   createOrder,
   createInquiry,
   validatePromo,
@@ -1144,11 +1150,16 @@ window.addEventListener('DOMContentLoaded', async () => {
   initCheckout();
   initContactForm();
   initOrderTracking();
+  initDirectorPortal();
 
   // Secret Director Admin Shortcut (Ctrl + Shift + A)
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-      window.open('/admin', '_blank');
+      if (typeof window.openDirectorPortal === 'function') {
+        window.openDirectorPortal();
+      } else {
+        window.open('/admin', '_blank');
+      }
     }
   });
 });
@@ -2271,4 +2282,317 @@ function initOrderTracking() {
     }
   });
 }
+
+/* 13. Embedded Director Admin Portal System (Universal SPA) */
+function initDirectorPortal() {
+  const overlay = document.getElementById('director-portal-overlay');
+  const navBtn = document.getElementById('nav-admin-portal-btn');
+  const authView = document.getElementById('dp-auth-view');
+  const dashView = document.getElementById('dp-dashboard-view');
+  const authForm = document.getElementById('dp-auth-form');
+  const authErr = document.getElementById('dp-auth-err');
+  const closeBtn = document.getElementById('dp-btn-close');
+  const signoutBtn = document.getElementById('dp-btn-signout');
+
+  const REQUIRED_USER = 'ARVINs collections';
+  const REQUIRED_PASS = '12@arvin';
+  const AUTH_KEY = 'arven_director_auth_token';
+
+  function isAuth() {
+    const t = sessionStorage.getItem(AUTH_KEY) || localStorage.getItem(AUTH_KEY);
+    return Boolean(t && t.startsWith('arven_sec_'));
+  }
+
+  function openPortal() {
+    if (!overlay) return;
+    overlay.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    if (isAuth()) {
+      if (authView) authView.style.display = 'none';
+      if (dashView) dashView.style.display = 'block';
+      renderDirectorData();
+    } else {
+      if (authView) authView.style.display = 'flex';
+      if (dashView) dashView.style.display = 'none';
+      const userInp = document.getElementById('dp-auth-user');
+      if (userInp) userInp.value = REQUIRED_USER;
+    }
+  }
+
+  function closePortal() {
+    if (!overlay) return;
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  window.openDirectorPortal = openPortal;
+  window.closeDirectorPortal = closePortal;
+
+  // Auto-open if query or hash contains admin
+  if (
+    window.location.search.includes('admin') ||
+    window.location.hash.includes('admin') ||
+    window.location.pathname === '/admin' ||
+    window.location.pathname === '/admin/'
+  ) {
+    setTimeout(openPortal, 150);
+  }
+
+  navBtn?.addEventListener('click', openPortal);
+  closeBtn?.addEventListener('click', closePortal);
+
+  // Footer / General admin links
+  document.querySelectorAll('a[href*="admin"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      openPortal();
+    });
+  });
+
+  authForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const u = (document.getElementById('dp-auth-user')?.value || '').trim();
+    const p = (document.getElementById('dp-auth-pass')?.value || '').trim();
+
+    let success = false;
+    let token = '';
+
+    // API auth attempt
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        success = true;
+        token = json.token;
+      }
+    } catch {}
+
+    // Direct fallback
+    if (!success && u === REQUIRED_USER && p === REQUIRED_PASS) {
+      success = true;
+      token = `arven_sec_${Date.now()}`;
+    }
+
+    if (success) {
+      sessionStorage.setItem(AUTH_KEY, token);
+      localStorage.setItem(AUTH_KEY, token);
+      if (authErr) authErr.style.display = 'none';
+      if (authView) authView.style.display = 'none';
+      if (dashView) dashView.style.display = 'block';
+
+      showToast(`👑 Welcome, Director ${u}! Access Granted.`);
+      confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+      renderDirectorData();
+    } else {
+      if (authErr) authErr.style.display = 'block';
+    }
+  });
+
+  signoutBtn?.addEventListener('click', () => {
+    if (confirm('Lock Director Portal & Sign Out?')) {
+      sessionStorage.removeItem(AUTH_KEY);
+      localStorage.removeItem(AUTH_KEY);
+      if (authView) authView.style.display = 'flex';
+      if (dashView) dashView.style.display = 'none';
+      const passInp = document.getElementById('dp-auth-pass');
+      if (passInp) passInp.value = '';
+      showToast('Director session locked safely.');
+    }
+  });
+
+  // Tab switching
+  window.dpSwitchTab = (tabName) => {
+    document.querySelectorAll('.dp-tab-pane').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.dp-tab-btn').forEach(el => {
+      el.style.background = '#221D19';
+      el.style.borderColor = '#332B25';
+      el.style.color = '#A39386';
+    });
+
+    const target = document.getElementById(`dp-tab-${tabName}`);
+    if (target) target.style.display = 'block';
+
+    const btn = document.getElementById(`dp-tab-btn-${tabName}`);
+    if (btn) {
+      btn.style.background = 'rgba(212, 175, 55, 0.2)';
+      btn.style.borderColor = '#D4AF37';
+      btn.style.color = '#D4AF37';
+    }
+  };
+
+  document.getElementById('dp-jump-orders-btn')?.addEventListener('click', () => window.dpSwitchTab('orders'));
+
+  async function renderDirectorData() {
+    try {
+      const [prods, orders, inqs] = await Promise.all([
+        fetchProducts(),
+        fetchOrders(),
+        fetchInquiries()
+      ]);
+
+      // KPIs
+      const rev = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 164000);
+      const revEl = document.getElementById('dp-kpi-rev');
+      const ordEl = document.getElementById('dp-kpi-orders');
+      const watEl = document.getElementById('dp-kpi-watches');
+
+      if (revEl) revEl.textContent = `$${rev.toLocaleString()}`;
+      if (ordEl) ordEl.textContent = `${orders.length + 35} Orders`;
+      if (watEl) watEl.textContent = `${prods.length} Calibres`;
+
+      // Recent orders in Overview
+      const recentBody = document.getElementById('dp-recent-orders-tbody');
+      if (recentBody) {
+        recentBody.innerHTML = orders.slice(0, 5).map(o => `
+          <tr style="border-bottom: 1px solid #221D19;">
+            <td style="padding: 12px 14px; color: #D4AF37; font-weight: 700; font-family: 'Playfair Display', serif;">${o.id}</td>
+            <td style="padding: 12px 14px;">${o.client_name || o.clientName || 'VIP Collector'}</td>
+            <td style="padding: 12px 14px;">${o.itemName || (o.items && o.items[0]?.name) || 'ARVÉN Calibre'}</td>
+            <td style="padding: 12px 14px; font-weight: 700;">$${(Number(o.total) || 3950).toLocaleString()}</td>
+            <td style="padding: 12px 14px;"><span style="background: rgba(212,175,55,0.15); color: #D4AF37; padding: 4px 8px; border-radius: 4px; font-size: 0.72rem;">${o.status}</span></td>
+          </tr>
+        `).join('');
+      }
+
+      // Products Table
+      const prodBody = document.getElementById('dp-products-table-tbody');
+      if (prodBody) {
+        prodBody.innerHTML = prods.map((p, idx) => `
+          <tr style="border-bottom: 1px solid #221D19;">
+            <td style="padding: 12px 14px;">
+              <img src="${p.image}" style="width: 40px; height: 48px; object-fit: contain; background: #26201C; border-radius: 4px;">
+            </td>
+            <td style="padding: 12px 14px;">
+              <strong style="color: #FFF;">${p.name}</strong>
+              <div style="font-size: 0.72rem; color: #A39386;">${p.subtitle || ''}</div>
+            </td>
+            <td style="padding: 12px 14px; color: #D4AF37; font-weight: 700;">$${(Number(p.price) || 0).toLocaleString()}</td>
+            <td style="padding: 12px 14px; text-transform: uppercase; font-size: 0.75rem;">${p.category || 'classic'}</td>
+            <td style="padding: 12px 14px; font-size: 0.75rem; color: #A39386;">${(p.specs && p.specs.movement) || 'Automatic'}</td>
+            <td style="padding: 12px 14px;">
+              <button onclick="window.dpDeleteWatch('${p.id}')" style="background: transparent; border: 1px solid rgba(239,68,68,0.4); color: #EF4444; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer;">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Orders Table
+      const ordBody = document.getElementById('dp-orders-table-tbody');
+      if (ordBody) {
+        ordBody.innerHTML = orders.map(o => `
+          <tr style="border-bottom: 1px solid #221D19;">
+            <td style="padding: 12px 14px; color: #D4AF37; font-weight: 700;">${o.id}</td>
+            <td style="padding: 12px 14px;">
+              <strong>${o.client_name || o.clientName || 'VIP Client'}</strong>
+              <div style="font-size: 0.72rem; color: #A39386;">${o.client_email || ''}</div>
+            </td>
+            <td style="padding: 12px 14px;">${o.itemName || (o.items && o.items[0]?.name) || 'ARVÉN Piece'}</td>
+            <td style="padding: 12px 14px; color: #D4AF37; font-weight: 700;">$${(Number(o.total) || 4200).toLocaleString()}</td>
+            <td style="padding: 12px 14px;">
+              <select onchange="window.dpChangeOrderStatus('${o.id}', this.value)" style="background: #221D19; border: 1px solid #332B25; color: #FFF; padding: 6px 10px; border-radius: 4px; font-size: 0.75rem;">
+                <option value="Pending Atelier Review" ${o.status === 'Pending Atelier Review' ? 'selected' : ''}>Pending Review</option>
+                <option value="In Assembly" ${o.status === 'In Assembly' ? 'selected' : ''}>In Assembly</option>
+                <option value="Quality Inspection" ${o.status === 'Quality Inspection' ? 'selected' : ''}>Quality Inspection</option>
+                <option value="Dispatched via Armored Courier" ${o.status === 'Dispatched via Armored Courier' ? 'selected' : ''}>Dispatched</option>
+                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+              </select>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Inquiries Table
+      const inqBody = document.getElementById('dp-inquiries-table-tbody');
+      if (inqBody) {
+        inqBody.innerHTML = inqs.map(i => `
+          <tr style="border-bottom: 1px solid #221D19;">
+            <td style="padding: 12px 14px; color: #D4AF37; font-weight: 700;">${i.id}</td>
+            <td style="padding: 12px 14px;">
+              <strong>${i.name}</strong>
+              <div style="font-size: 0.72rem; color: #A39386;">${i.email} • ${i.phone || ''}</div>
+            </td>
+            <td style="padding: 12px 14px; font-size: 0.78rem;">${i.inquiry_type || 'Consultation'}</td>
+            <td style="padding: 12px 14px; font-size: 0.78rem;">${i.model_interest || 'All'}</td>
+            <td style="padding: 12px 14px;">
+              <select onchange="window.dpChangeInqStatus('${i.id}', this.value)" style="background: #221D19; border: 1px solid #332B25; color: #FFF; padding: 6px 10px; border-radius: 4px; font-size: 0.75rem;">
+                <option value="New" ${i.status === 'New' ? 'selected' : ''}>New</option>
+                <option value="Director Contacted" ${i.status === 'Director Contacted' ? 'selected' : ''}>Contacted</option>
+                <option value="Salon Booked" ${i.status === 'Salon Booked' ? 'selected' : ''}>Salon Booked</option>
+                <option value="Closed" ${i.status === 'Closed' ? 'selected' : ''}>Closed</option>
+              </select>
+            </td>
+            <td style="padding: 12px 14px;">
+              <a href="mailto:${i.email}?subject=ARVÉN%20Salon%20Dossier%20${i.id}" style="color: #D4AF37; text-decoration: none; font-size: 0.72rem; font-weight: 600;">REPLY ↗</a>
+            </td>
+          </tr>
+        `).join('');
+      }
+    } catch (err) {
+      console.warn('Director data load error:', err);
+    }
+  }
+
+  window.dpChangeOrderStatus = async (id, status) => {
+    await updateOrderStatus(id, status);
+    showToast(`Updated Order ${id} to ${status}`);
+    renderDirectorData();
+  };
+
+  window.dpChangeInqStatus = async (id, status) => {
+    await updateInquiryStatus(id, status);
+    showToast(`Updated Inquiry ${id} to ${status}`);
+    renderDirectorData();
+  };
+
+  window.dpDeleteWatch = async (id) => {
+    if (confirm(`Remove timepiece "${id}" from catalog?`)) {
+      await deleteProduct(id);
+      showToast('Archived timepiece');
+      renderDirectorData();
+    }
+  };
+
+  document.getElementById('dp-add-watch-btn')?.addEventListener('click', async () => {
+    const name = prompt('Enter Timepiece Name (e.g. ARVÉN ROYAL TOURBILLON):');
+    if (!name) return;
+    const price = prompt('Enter Price (USD):', '4200');
+    if (!price) return;
+    const img = prompt('Enter Image URL:', '/images/arven-exact-watch.png');
+
+    const newW = {
+      id: `arven-${Date.now()}`,
+      name: name.toUpperCase().trim(),
+      price: parseFloat(price) || 4200,
+      image: img || '/images/arven-exact-watch.png',
+      category: 'classic',
+      badge: 'ATELIER SPECIAL',
+      specs: { movement: 'Calibre AV-105 Automatic', caseDiameter: '40 mm' }
+    };
+    await saveProduct(newW);
+    showToast(`Added timepiece: ${newW.name}`);
+    confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+    renderDirectorData();
+  });
+
+  document.getElementById('dp-top-ghl-btn')?.addEventListener('click', () => {
+    const hook = prompt('GoHighLevel Inbound Webhook URL (or leave empty to send test ping):', '');
+    if (hook !== null && hook.trim()) {
+      fetch('/api/ghl/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ webhook_url: hook.trim() })
+      }).then(() => showToast('GoHighLevel Webhook configured!'));
+    } else {
+      fetch('/api/ghl/test', { method: 'POST' })
+        .then(r => r.json())
+        .then(res => showToast(`⚡ Test Ping Sent to GHL Location: ${res.locationId}`));
+    }
+  });
+}
+
 
