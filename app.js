@@ -462,6 +462,73 @@ let PRODUCTS = [
   }
 ];
 
+export function normalizeProduct(p) {
+  if (!p) return null;
+  const rawOpts = (p.colorOptions && p.colorOptions.length > 0) 
+    ? p.colorOptions 
+    : ((p.color_options && p.color_options.length > 0) ? p.color_options : []);
+
+  const colorOptions = rawOpts.length > 0 ? rawOpts.map((opt, i) => ({
+    id: opt.id || `${p.id}-var-${i}`,
+    name: opt.name || p.name,
+    shortName: opt.shortName || opt.name || p.tag || 'Classic Edition',
+    colorHex: opt.colorHex || opt.caseColor || '#D4AF37',
+    accentHex: opt.accentHex || opt.dialColor || '#1A365D',
+    caseColor: opt.caseColor || opt.colorHex || '#D4AF37',
+    dialColor: opt.dialColor || opt.accentHex || '#1A365D',
+    strapColor: opt.strapColor || '#2C1E17',
+    price: Number(opt.price) || Number(p.price) || 3950,
+    size: opt.size || p.size || '41mm',
+    tag: opt.tag || p.tag || 'Haute Horlogerie',
+    badge: opt.badge || p.badge || 'ATELIER',
+    image: opt.image || p.image || '/images/arven-exact-watch.png',
+    specs: opt.specs || p.specs || {}
+  })) : [{
+    id: `${p.id}-default`,
+    name: p.name,
+    shortName: p.tag || 'Classic Edition',
+    colorHex: '#B08A45',
+    accentHex: '#2C1E17',
+    caseColor: '#B08A45',
+    dialColor: '#1A365D',
+    strapColor: '#2C1E17',
+    price: Number(p.price) || 3950,
+    size: p.size || '41mm',
+    tag: p.tag || 'Haute Horlogerie',
+    badge: p.badge || 'ATELIER',
+    image: p.image || '/images/arven-exact-watch.png',
+    specs: p.specs || {}
+  }];
+
+  return {
+    ...p,
+    price: Number(p.price) || Number(colorOptions[0].price) || 3950,
+    image: p.image || colorOptions[0].image || '/images/arven-exact-watch.png',
+    badge: p.badge || 'ATELIER SPECIAL',
+    tag: p.tag || 'Haute Horlogerie',
+    size: p.size || '41mm',
+    category: p.category || 'classic',
+    colorOptions,
+    color_options: colorOptions,
+    specs: p.specs || {
+      caseDiameter: p.size || '41 mm',
+      caseThickness: '10.5 mm',
+      movement: 'Calibre AV-320 Swiss Automatic',
+      powerReserve: '50 Hours',
+      waterResistance: '100 Metres (10 ATM)',
+      glass: 'Scratch-Resistant Box Sapphire with AR Glare Shield',
+      strapMaterial: 'Handcrafted Italian Leather'
+    }
+  };
+}
+
+export function normalizeProducts(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map(normalizeProduct).filter(Boolean);
+}
+
+PRODUCTS = normalizeProducts(PRODUCTS);
+
 const JOURNAL_ARTICLES = [
   {
     id: 'art-of-watchmaking',
@@ -1093,15 +1160,14 @@ function createWatch3D(container, options = {}) {
   function animate() {
     animId = requestAnimationFrame(animate);
     const elapsedTime = clock.getElapsedTime();
-    const delta = clock.getDelta();
 
     // Smooth Kinetic Floating / Breathing ("3D emotions")
     floatingRoot.position.y = Math.sin(elapsedTime * 1.5) * 0.08;
     floatingRoot.rotation.x = Math.sin(elapsedTime * 0.85) * 0.04;
     floatingRoot.rotation.z = Math.cos(elapsedTime * 0.65) * 0.03;
 
-    // Sweeping Seconds Hand
-    secGroup.rotation.z -= delta * 1.25;
+    // Sweeping Seconds Hand (Smooth continuous rotation)
+    secGroup.rotation.z = -elapsedTime * 1.25;
 
     if (controls) controls.update();
     renderer.render(scene, camera);
@@ -1129,11 +1195,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     const cloudProducts = await fetchProducts();
     if (cloudProducts && cloudProducts.length > 0) {
-      PRODUCTS = cloudProducts;
+      PRODUCTS = normalizeProducts(cloudProducts);
     }
   } catch (e) {
     console.warn('Using default product catalog', e);
   }
+  PRODUCTS = normalizeProducts(PRODUCTS);
 
   initNavbar();
   initHeroSection();
@@ -1242,15 +1309,16 @@ function initHeroSection() {
   const heroTopPreview = document.getElementById('hero-top-preview-watches');
   if (heroTopPreview) {
     heroTopPreview.innerHTML = PRODUCTS.slice(0, 3).map(p => {
-      const watchImg = p.colorOptions?.[0]?.image || p.image;
+      const opt = p.colorOptions?.[0] || {};
+      const watchImg = opt.image || p.image;
       const isPngCutout = watchImg && watchImg.endsWith('.png') && !watchImg.includes('wrist');
       return `
       <div onclick="window.openQuickView('${p.id}')" style="background: #FFFFFF; border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
         <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-          ${watchImg ? `<img src="${watchImg}" alt="${p.name}" style="max-height: 78px; max-width: 60px; object-fit: ${isPngCutout ? 'contain' : 'cover'};">` : getWatchSVG(p.colorOptions[0].caseColor, p.colorOptions[0].dialColor, p.colorOptions[0].strapColor, p.category === 'chronograph', 60)}
+          ${watchImg ? `<img src="${watchImg}" alt="${p.name}" style="max-height: 78px; max-width: 60px; object-fit: ${isPngCutout ? 'contain' : 'cover'};">` : getWatchSVG(opt.caseColor || '#B08A45', opt.dialColor || '#1A365D', opt.strapColor || '#2C1E17', p.category === 'chronograph', 60)}
         </div>
         <span style="font-size: 0.72rem; font-weight: 600; color: var(--color-deep-brown); margin-top: 4px; text-align: center;">${p.name.replace('ARVÉN ', '')}</span>
-        <span style="font-size: 0.68rem; color: var(--text-muted);">$${p.price.toLocaleString()}</span>
+        <span style="font-size: 0.68rem; color: var(--text-muted);">$${(opt.price || p.price).toLocaleString()}</span>
       </div>
     `;
     }).join('');
@@ -1262,28 +1330,38 @@ function initSpecialAdditions() {
   const container = document.getElementById('special-additions-grid');
   if (!container) return;
 
-  container.innerHTML = PRODUCTS.map(p => `
-    <div class="showcase-tile" onclick="window.openQuickViewModal('${p.id}')" style="cursor: pointer; position: relative;">
+  container.innerHTML = PRODUCTS.map(p => {
+    const opt = (p.colorOptions && p.colorOptions[0]) || {
+      colorHex: '#B08A45',
+      tag: p.tag,
+      size: p.size,
+      image: p.image,
+      price: p.price
+    };
+    const hasMultiple = p.colorOptions && p.colorOptions.length > 1;
+
+    return `
+    <div class="showcase-tile" onclick="window.openQuickView('${p.id}')" style="cursor: pointer; position: relative;">
       <!-- Top Pill Tag & Size -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <span class="pill-tag" id="card-tag-${p.id}">
-          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${p.colorOptions[0].colorHex || '#B08A45'};"></span>
-          ${p.colorOptions[0].tag || p.tag} • ${p.colorOptions[0].size || p.size}
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${opt.colorHex || '#B08A45'};"></span>
+          ${opt.tag || p.tag} • ${opt.size || p.size}
         </span>
-        <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; letter-spacing: 0.08em;">${p.badge}</span>
+        <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700; letter-spacing: 0.08em;">${p.badge || 'ATELIER'}</span>
       </div>
 
       <!-- Watch Visual -->
       <div style="height: 240px; width: 100%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #FFFFFF 0%, #F5EEE5 100%); border-radius: var(--radius-sm); margin: 8px 0; overflow: hidden; position: relative;">
-        <img id="card-img-${p.id}" src="${p.colorOptions[0].image || p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: ${(p.colorOptions[0].image || p.image || '').endsWith('.png') && p.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center; transition: transform 0.4s ease, opacity 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+        <img id="card-img-${p.id}" src="${opt.image || p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: ${(opt.image || p.image || '').endsWith('.png') && p.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center; transition: transform 0.4s ease, opacity 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
       </div>
 
       <!-- Colors / Editions Swatch Switcher (if product has multiple color options) -->
-      ${p.colorOptions.length > 1 ? `
+      ${hasMultiple ? `
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center; margin: 10px 0 6px 0; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 9999px;" onclick="event.stopPropagation()">
           <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-right: 4px;">${p.colorOptions.length} Styles:</span>
-          ${p.colorOptions.map((opt, oIdx) => `
-            <button id="swatch-${p.id}-${oIdx}" class="color-swatch-dot" title="${opt.name}" onclick="window.switchCardVariant('${p.id}', ${oIdx})" style="width: 20px; height: 20px; border-radius: 50%; background: ${opt.colorHex}; border: 2px solid ${oIdx === 0 ? 'var(--color-champagne-gold)' : '#FFFFFF'}; box-shadow: 0 2px 5px rgba(0,0,0,0.25); cursor: pointer; transition: all 0.2s; transform: ${oIdx === 0 ? 'scale(1.2)' : 'scale(1)'};"></button>
+          ${p.colorOptions.map((vOpt, oIdx) => `
+            <button id="swatch-${p.id}-${oIdx}" class="color-swatch-dot" title="${vOpt.name}" onclick="window.switchCardVariant('${p.id}', ${oIdx})" style="width: 20px; height: 20px; border-radius: 50%; background: ${vOpt.colorHex}; border: 2px solid ${oIdx === 0 ? 'var(--color-champagne-gold)' : '#FFFFFF'}; box-shadow: 0 2px 5px rgba(0,0,0,0.25); cursor: pointer; transition: all 0.2s; transform: ${oIdx === 0 ? 'scale(1.2)' : 'scale(1)'};"></button>
           `).join('')}
         </div>
       ` : ''}
@@ -1295,20 +1373,21 @@ function initSpecialAdditions() {
         </h4>
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span id="card-price-${p.id}" style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 600; color: var(--color-deep-brown);">
-            $${(p.colorOptions[0].price || p.price).toLocaleString()}.00
+            $${(opt.price || p.price).toLocaleString()}.00
           </span>
-          <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.7rem;" onclick="event.stopPropagation(); window.addToBagDirect('${p.id}')">
-            ${p.colorOptions.length > 1 ? 'SELECT OPTIONS' : 'ADD TO BAG'}
+          <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.7rem;" onclick="event.stopPropagation(); ${hasMultiple ? `window.openQuickView('${p.id}')` : `window.addToBagDirect('${p.id}')`}">
+            ${hasMultiple ? 'SELECT OPTIONS' : 'ADD TO BAG'}
           </button>
         </div>
       </div>
     </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 window.switchCardVariant = (productId, colorIdx) => {
   const p = PRODUCTS.find(prod => prod.id === productId);
-  if (!p) return;
+  if (!p || !p.colorOptions) return;
   const opt = p.colorOptions[colorIdx];
   if (!opt) return;
 
@@ -1382,28 +1461,31 @@ function renderAccordion(activeIdx) {
   `).join('');
 
   if (rightDisplay) {
-    const selected = COLLECTION_MODELS[activeIdx].refProduct;
-    const second = PRODUCTS[(PRODUCTS.indexOf(selected) + 1) % PRODUCTS.length];
+    const selected = (COLLECTION_MODELS[activeIdx] && COLLECTION_MODELS[activeIdx].refProduct) || PRODUCTS[0];
+    const second = PRODUCTS[(PRODUCTS.indexOf(selected) + 1) % PRODUCTS.length] || PRODUCTS[1] || PRODUCTS[0];
+
+    const selOpt = selected.colorOptions?.[0] || {};
+    const secOpt = second.colorOptions?.[0] || {};
 
     rightDisplay.innerHTML = `
-      <div class="showcase-tile" onclick="window.openQuickViewModal('${selected.id}')" style="cursor: pointer;">
-        <span class="pill-tag">${selected.tag} • ${selected.size}</span>
+      <div class="showcase-tile" onclick="window.openQuickView('${selected.id}')" style="cursor: pointer;">
+        <span class="pill-tag">${selected.tag || selOpt.tag} • ${selected.size || selOpt.size}</span>
         <div style="height: 170px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 10px 0; overflow: hidden; border-radius: var(--radius-sm); background: radial-gradient(circle, #FFFFFF 0%, #F5EEE5 100%);">
-          ${selected.image ? `<img src="${selected.image}" alt="${selected.name}" style="height: 100%; width: 100%; object-fit: ${selected.image.endsWith('.png') && selected.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">` : getWatchSVG(selected.colorOptions[0].caseColor, selected.colorOptions[0].dialColor, selected.colorOptions[0].strapColor, selected.category === 'chronograph', 130)}
+          ${selected.image ? `<img src="${selected.image}" alt="${selected.name}" style="height: 100%; width: 100%; object-fit: ${selected.image.endsWith('.png') && selected.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">` : getWatchSVG(selOpt.caseColor || '#B08A45', selOpt.dialColor || '#1A365D', selOpt.strapColor || '#2C1E17', selected.category === 'chronograph', 130)}
         </div>
         <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
           <span style="font-size: 0.85rem; font-weight: 600;">${selected.name}</span>
-          <span style="font-family: var(--font-serif); font-weight: 600;">$${selected.price.toLocaleString()}</span>
+          <span style="font-family: var(--font-serif); font-weight: 600;">$${(selected.price || selOpt.price || 3950).toLocaleString()}</span>
         </div>
       </div>
-      <div class="showcase-tile" onclick="window.openQuickViewModal('${second.id}')" style="cursor: pointer;">
-        <span class="pill-tag">${second.tag} • ${second.size}</span>
+      <div class="showcase-tile" onclick="window.openQuickView('${second.id}')" style="cursor: pointer;">
+        <span class="pill-tag">${second.tag || secOpt.tag} • ${second.size || secOpt.size}</span>
         <div style="height: 170px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 10px 0; overflow: hidden; border-radius: var(--radius-sm); background: radial-gradient(circle, #FFFFFF 0%, #F5EEE5 100%);">
-          ${second.image ? `<img src="${second.image}" alt="${second.name}" style="height: 100%; width: 100%; object-fit: ${second.image.endsWith('.png') && second.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">` : getWatchSVG(second.colorOptions[0].caseColor, second.colorOptions[0].dialColor, second.colorOptions[0].strapColor, second.category === 'chronograph', 130)}
+          ${second.image ? `<img src="${second.image}" alt="${second.name}" style="height: 100%; width: 100%; object-fit: ${second.image.endsWith('.png') && second.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">` : getWatchSVG(secOpt.caseColor || '#B08A45', secOpt.dialColor || '#1A365D', secOpt.strapColor || '#2C1E17', second.category === 'chronograph', 130)}
         </div>
         <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
           <span style="font-size: 0.85rem; font-weight: 600;">${second.name}</span>
-          <span style="font-family: var(--font-serif); font-weight: 600;">$${second.price.toLocaleString()}</span>
+          <span style="font-family: var(--font-serif); font-weight: 600;">$${(second.price || secOpt.price || 3950).toLocaleString()}</span>
         </div>
       </div>
     `;
@@ -1832,7 +1914,12 @@ window.changeCartQty = (idx, delta) => {
 window.addToBagDirect = (productId) => {
   const p = PRODUCTS.find(prod => prod.id === productId);
   if (!p) return;
-  const opt = p.colorOptions[0];
+  const opt = (p.colorOptions && p.colorOptions[0]) || {
+    name: p.name,
+    price: p.price,
+    image: p.image,
+    specs: p.specs || {}
+  };
   cart.push({
     product: {
       id: p.id,
@@ -1840,12 +1927,12 @@ window.addToBagDirect = (productId) => {
       subtitle: opt.name || p.subtitle,
       price: opt.price || p.price,
       image: opt.image || p.image,
-      colorOptions: p.colorOptions
+      colorOptions: p.colorOptions || [opt]
     },
     quantity: 1,
-    selectedCase: opt.name,
-    selectedStrap: (opt.specs && opt.specs.strapMaterial) || 'Handcrafted Strap',
-    selectedDial: opt.name
+    selectedCase: opt.name || p.name,
+    selectedStrap: (opt.specs && opt.specs.strapMaterial) || (p.specs && p.specs.strapMaterial) || 'Handcrafted Strap',
+    selectedDial: opt.name || p.name
   });
   saveCart();
   showToast(`Added ${p.name} to your shopping bag.`);
@@ -1863,7 +1950,13 @@ function initQuickView() {
 
   document.getElementById('quick-view-add-to-bag')?.addEventListener('click', () => {
     if (!activeQuickProduct) return;
-    const opt = activeQuickProduct.colorOptions[activeQuickColorIdx] || activeQuickProduct.colorOptions[0];
+    const opt = (activeQuickProduct.colorOptions && (activeQuickProduct.colorOptions[activeQuickColorIdx] || activeQuickProduct.colorOptions[0])) || {
+      name: activeQuickProduct.name,
+      shortName: activeQuickProduct.tag,
+      price: activeQuickProduct.price,
+      image: activeQuickProduct.image,
+      specs: activeQuickProduct.specs || {}
+    };
     cart.push({
       product: {
         id: `${activeQuickProduct.id}-${opt.id || activeQuickColorIdx}`,
@@ -1871,12 +1964,12 @@ function initQuickView() {
         subtitle: opt.name || activeQuickProduct.subtitle,
         price: opt.price || activeQuickProduct.price,
         image: opt.image || activeQuickProduct.image,
-        colorOptions: [{ caseColor: opt.colorHex || '#D4AF37', dialColor: opt.colorHex || '#121110', strapColor: opt.accentHex || '#22201E' }]
+        colorOptions: [{ caseColor: opt.colorHex || '#D4AF37', dialColor: opt.accentHex || '#121110', strapColor: opt.strapColor || '#22201E' }]
       },
       quantity: 1,
-      selectedCase: opt.name,
-      selectedStrap: (opt.specs && opt.specs.strapMaterial) || 'Handcrafted Strap',
-      selectedDial: opt.name
+      selectedCase: opt.name || activeQuickProduct.name,
+      selectedStrap: (opt.specs && opt.specs.strapMaterial) || (activeQuickProduct.specs && activeQuickProduct.specs.strapMaterial) || 'Handcrafted Strap',
+      selectedDial: opt.name || activeQuickProduct.name
     });
     saveCart();
     showToast(`Added ${opt.name} ($${(opt.price || activeQuickProduct.price).toLocaleString()}) to your bag.`);
@@ -1889,22 +1982,47 @@ window.openQuickViewModal = (productId) => {
   activeQuickProduct = PRODUCTS.find(p => p.id === productId);
   if (!activeQuickProduct) return;
   activeQuickColorIdx = 0;
-  document.getElementById('quick-view-modal').style.display = 'flex';
+  const modal = document.getElementById('quick-view-modal');
+  if (modal) modal.style.display = 'flex';
   renderQuickViewContent();
 };
+window.openQuickView = window.openQuickViewModal;
 
 function renderQuickViewContent() {
   const p = activeQuickProduct;
-  const opt = p.colorOptions[activeQuickColorIdx] || p.colorOptions[0];
+  if (!p) return;
+  const opt = (p.colorOptions && (p.colorOptions[activeQuickColorIdx] || p.colorOptions[0])) || {
+    name: p.name,
+    shortName: p.tag,
+    price: p.price,
+    image: p.image,
+    specs: p.specs || {}
+  };
 
-  document.getElementById('quick-view-title').textContent = opt.shortName ? `ARVÉN ${opt.shortName.toUpperCase()}` : p.name;
-  document.getElementById('quick-view-subtitle').textContent = opt.name || p.subtitle;
-  document.getElementById('quick-view-price').textContent = `$${(opt.price || p.price).toLocaleString()}`;
-  document.getElementById('quick-view-desc').textContent = p.description;
-  document.getElementById('quick-view-spec-diam').textContent = (opt.specs && opt.specs.caseDiameter) || p.specs.caseDiameter;
-  document.getElementById('quick-view-spec-mov').textContent = (opt.specs && opt.specs.movement) || p.specs.movement;
-  document.getElementById('quick-view-spec-glass').textContent = (opt.specs && opt.specs.glass) || p.specs.glass;
-  document.getElementById('quick-view-spec-water').textContent = (opt.specs && opt.specs.waterResistance) || p.specs.waterResistance;
+  const titleEl = document.getElementById('quick-view-title');
+  if (titleEl) titleEl.textContent = opt.shortName ? `ARVÉN ${opt.shortName.toUpperCase()}` : p.name;
+
+  const subEl = document.getElementById('quick-view-subtitle');
+  if (subEl) subEl.textContent = opt.name || p.subtitle || '';
+
+  const priceEl = document.getElementById('quick-view-price');
+  if (priceEl) priceEl.textContent = `$${(opt.price || p.price).toLocaleString()}`;
+
+  const descEl = document.getElementById('quick-view-desc');
+  if (descEl) descEl.textContent = p.description || 'Swiss haute horlogerie.';
+
+  const specs = opt.specs || p.specs || {};
+  const diamEl = document.getElementById('quick-view-spec-diam');
+  if (diamEl) diamEl.textContent = specs.caseDiameter || p.size || '41 mm';
+
+  const movEl = document.getElementById('quick-view-spec-mov');
+  if (movEl) movEl.textContent = specs.movement || 'Swiss Automatic';
+
+  const glassEl = document.getElementById('quick-view-spec-glass');
+  if (glassEl) glassEl.textContent = specs.glass || 'Sapphire Crystal AR';
+
+  const waterEl = document.getElementById('quick-view-spec-water');
+  if (waterEl) waterEl.textContent = specs.waterResistance || '100 Metres (10 ATM)';
 
   const visualContainer = document.getElementById('quick-view-visual');
   if (visualContainer) {
@@ -1913,11 +2031,11 @@ function renderQuickViewContent() {
   }
 
   const finishContainer = document.getElementById('quick-view-finishes');
-  if (finishContainer) {
+  if (finishContainer && p.colorOptions && p.colorOptions.length > 0) {
     finishContainer.innerHTML = p.colorOptions.map((o, idx) => `
       <button class="btn ${idx === activeQuickColorIdx ? 'btn-primary' : 'btn-outline'}" style="padding: 8px 14px; font-size: 0.76rem; display: flex; align-items: center; gap: 8px; border-radius: var(--radius-sm); border-color: ${idx === activeQuickColorIdx ? 'var(--color-champagne-gold)' : 'var(--border-light)'};" onclick="window.setQuickColorIdx(${idx})">
-        <span style="width: 12px; height: 12px; border-radius: 50%; background: ${o.colorHex}; border: 1px solid rgba(255,255,255,0.7); display: inline-block;"></span>
-        <span>${o.name} ($${o.price.toLocaleString()})</span>
+        <span style="width: 12px; height: 12px; border-radius: 50%; background: ${o.colorHex || '#B08A45'}; border: 1px solid rgba(255,255,255,0.7); display: inline-block;"></span>
+        <span>${o.name || `Option ${idx + 1}`} ($${(o.price || p.price).toLocaleString()})</span>
       </button>
     `).join('');
   }
