@@ -1246,10 +1246,59 @@ function initNavbar() {
 
   const mobileBtn = document.getElementById('mobile-menu-btn');
   const mobileDrawer = document.getElementById('mobile-drawer');
-  if (mobileBtn && mobileDrawer) {
-    mobileBtn.addEventListener('click', () => {
-      const isOpen = mobileDrawer.style.display === 'flex';
-      mobileDrawer.style.display = isOpen ? 'none' : 'flex';
+  const mobileCloseBtn = document.getElementById('mobile-drawer-close-btn');
+  const mobileTrackBtn = document.getElementById('mobile-track-btn');
+  const mobileAdminBtn = document.getElementById('mobile-admin-btn');
+
+  function openMobileDrawer() {
+    if (mobileDrawer) {
+      mobileDrawer.style.display = 'flex';
+      requestAnimationFrame(() => {
+        mobileDrawer.classList.add('active');
+        mobileDrawer.style.opacity = '1';
+      });
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeMobileDrawer() {
+    if (mobileDrawer) {
+      mobileDrawer.classList.remove('active');
+      mobileDrawer.style.opacity = '0';
+      setTimeout(() => {
+        mobileDrawer.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 300);
+    }
+  }
+
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', openMobileDrawer);
+  }
+  if (mobileCloseBtn) {
+    mobileCloseBtn.addEventListener('click', closeMobileDrawer);
+  }
+
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', closeMobileDrawer);
+  });
+
+  if (mobileTrackBtn) {
+    mobileTrackBtn.addEventListener('click', () => {
+      closeMobileDrawer();
+      const trackModal = document.getElementById('tracking-modal');
+      if (trackModal) trackModal.style.display = 'flex';
+    });
+  }
+
+  if (mobileAdminBtn) {
+    mobileAdminBtn.addEventListener('click', () => {
+      closeMobileDrawer();
+      if (typeof window.openDirectorPortal === 'function') {
+        window.openDirectorPortal();
+      } else {
+        window.location.href = '/admin.html';
+      }
     });
   }
 }
@@ -1264,7 +1313,7 @@ function initHeroSection() {
   let is3DActive = false;
   let hero3DEngine = null;
 
-  // Interactive 3D Gyro / Mouse Parallax on Flagship Exact Watch Card
+  // Interactive 3D Gyro / Mouse & Touch Parallax on Flagship Exact Watch Card
   if (cardWrapper && watchRig) {
     cardWrapper.addEventListener('mousemove', (e) => {
       if (is3DActive) return;
@@ -1276,6 +1325,20 @@ function initHeroSection() {
     });
 
     cardWrapper.addEventListener('mouseleave', () => {
+      if (is3DActive) return;
+      watchRig.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)';
+    });
+
+    cardWrapper.addEventListener('touchmove', (e) => {
+      if (is3DActive || !e.touches || !e.touches[0]) return;
+      const rect = cardWrapper.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = (touch.clientX - rect.left) / rect.width - 0.5;
+      const y = (touch.clientY - rect.top) / rect.height - 0.5;
+      watchRig.style.transform = `perspective(1000px) rotateY(${x * 20}deg) rotateX(${-y * 20}deg) scale3d(1.03, 1.03, 1.03)`;
+    }, { passive: true });
+
+    cardWrapper.addEventListener('touchend', () => {
       if (is3DActive) return;
       watchRig.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)';
     });
@@ -1518,7 +1581,7 @@ function initBespokeCustomizer() {
   const visualCard = document.getElementById('bespoke-visual-card');
   const exactRig = document.getElementById('bespoke-exact-rig');
 
-  // Interactive 3D Gyro / Mouse Parallax on Bespoke Card
+  // Interactive 3D Gyro / Mouse & Touch Parallax on Bespoke Card
   if (visualCard && exactRig) {
     visualCard.addEventListener('mousemove', (e) => {
       const rect = visualCard.getBoundingClientRect();
@@ -1529,6 +1592,19 @@ function initBespokeCustomizer() {
     });
 
     visualCard.addEventListener('mouseleave', () => {
+      exactRig.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)';
+    });
+
+    visualCard.addEventListener('touchmove', (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      const rect = visualCard.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = (touch.clientX - rect.left) / rect.width - 0.5;
+      const y = (touch.clientY - rect.top) / rect.height - 0.5;
+      exactRig.style.transform = `perspective(1000px) rotateY(${x * 20}deg) rotateX(${-y * 20}deg) scale3d(1.03, 1.03, 1.03)`;
+    }, { passive: true });
+
+    visualCard.addEventListener('touchend', () => {
       exactRig.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)';
     });
   }
