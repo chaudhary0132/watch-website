@@ -1,0 +1,6 @@
+local-server.js
+node_modules
+.git
+.DS_Store
+database/backups
+*.log
