@@ -1561,12 +1561,12 @@ window.switchCardVariant = (productId, colorIdx) => {
 
 /* 4. "SHOP OUR BRANDS" / SIGNATURE COLLECTIONS ACCORDION (Matching Reference) */
 const COLLECTION_MODELS = [
-  { name: 'Haute Horlogerie 4-Editions Series', count: '4 Curated Bespoke Styles', refProduct: PRODUCTS[0] },
-  { name: 'Calibre AV-300 Diver Two-Tone', count: '18k Gold Coin-Edge & Ceramic', refProduct: PRODUCTS[1] },
-  { name: 'Heritage Slimline Dress Watch', count: 'Calibre AV-101 Slim Date', refProduct: PRODUCTS[2] },
-  { name: 'Chronographe Bicompax Royale', count: 'Column-Wheel Mechanical', refProduct: PRODUCTS[3] },
-  { name: 'Grand Heritage Vintage 1954', count: 'Curved Wire Lugs Manual Wind', refProduct: PRODUCTS[4] },
-  { name: 'Atelier Noir DLC Stealth', count: 'Deep Bronze & Onyx Edition', refProduct: PRODUCTS[5] }
+  { id: 'arven-haute-collection', name: 'Haute Horlogerie 4-Editions Series', count: '4 Curated Bespoke Styles' },
+  { id: 'arven-diver-twotone', name: 'Calibre AV-300 Diver Two-Tone', count: '18k Gold Coin-Edge & Ceramic' },
+  { id: 'arven-hero-wrist-watch', name: 'Heritage Slimline Dress Watch', count: 'Calibre AV-101 Slim Date' },
+  { id: 'arven-chrono', name: 'Chronographe Bicompax Royale', count: 'Column-Wheel Mechanical' },
+  { id: 'arven-cushion-silver', name: 'Cushion Ultra-Slim Monochromatic', count: 'Architectural Slim 7.8mm' },
+  { id: 'arven-square-noir', name: 'Carré Noir DLC Stealth Edition', count: 'Matte DLC Scratch-Proof' }
 ];
 
 function initBrandsAccordion() {
@@ -1592,31 +1592,45 @@ function renderAccordion(activeIdx) {
   `).join('');
 
   if (rightDisplay) {
-    const selected = (COLLECTION_MODELS[activeIdx] && COLLECTION_MODELS[activeIdx].refProduct) || PRODUCTS[0];
-    const second = PRODUCTS[(PRODUCTS.indexOf(selected) + 1) % PRODUCTS.length] || PRODUCTS[1] || PRODUCTS[0];
+    const item = COLLECTION_MODELS[activeIdx] || COLLECTION_MODELS[0];
+    const selectedIdx = PRODUCTS.findIndex(p => p.id === item.id);
+    const selected = (selectedIdx >= 0 ? PRODUCTS[selectedIdx] : PRODUCTS[0]) || PRODUCTS[0];
+    
+    // Pick a distinct complementary watch for the second card (never identical)
+    const otherProducts = PRODUCTS.filter(p => p.id !== selected.id);
+    const second = otherProducts[activeIdx % (otherProducts.length || 1)] || PRODUCTS[1] || PRODUCTS[0];
 
     const selOpt = selected.colorOptions?.[0] || {};
     const secOpt = second.colorOptions?.[0] || {};
 
+    const selImg = selected.image || selOpt.image || '/images/arven-exact-watch.png';
+    const secImg = second.image || secOpt.image || '/images/arven-royal-blue.jpg';
+
     rightDisplay.innerHTML = `
       <div class="showcase-tile" onclick="window.openQuickView('${selected.id}')" style="cursor: pointer;">
-        <span class="pill-tag">${selected.tag || selOpt.tag} • ${selected.size || selOpt.size}</span>
-        <div style="height: 170px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 10px 0; overflow: hidden; border-radius: var(--radius-sm); background: radial-gradient(circle, #FFFFFF 0%, #F5EEE5 100%);">
-          ${selected.image ? `<img src="${selected.image}" alt="${selected.name}" style="height: 100%; width: 100%; object-fit: ${selected.image.endsWith('.png') && selected.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">` : getWatchSVG(selOpt.caseColor || '#B08A45', selOpt.dialColor || '#1A365D', selOpt.strapColor || '#2C1E17', selected.category === 'chronograph', 130)}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span class="pill-tag">${selected.tag || selOpt.tag || 'Haute Edition'} • ${selected.size || selOpt.size || '40mm'}</span>
+          <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700;">${selected.badge || 'ATELIER'}</span>
+        </div>
+        <div style="height: 170px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 8px 0; overflow: hidden; border-radius: var(--radius-sm); background: radial-gradient(circle, #FFFFFF 0%, #F5EEE5 100%);">
+          <img src="${selImg}" alt="${selected.name}" style="height: 100%; width: 100%; object-fit: ${selImg && selImg.endsWith('.png') && selected.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">
         </div>
         <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
-          <span style="font-size: 0.85rem; font-weight: 600;">${selected.name}</span>
-          <span style="font-family: var(--font-serif); font-weight: 600;">$${(selected.price || selOpt.price || 3950).toLocaleString()}</span>
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-deep-brown); text-transform: uppercase;">${selected.name}</span>
+          <span style="font-family: var(--font-serif); font-weight: 600; color: var(--color-deep-brown);">$${(selected.price || selOpt.price || 3950).toLocaleString()}.00</span>
         </div>
       </div>
       <div class="showcase-tile" onclick="window.openQuickView('${second.id}')" style="cursor: pointer;">
-        <span class="pill-tag">${second.tag || secOpt.tag} • ${second.size || secOpt.size}</span>
-        <div style="height: 170px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 10px 0; overflow: hidden; border-radius: var(--radius-sm); background: radial-gradient(circle, #FFFFFF 0%, #F5EEE5 100%);">
-          ${second.image ? `<img src="${second.image}" alt="${second.name}" style="height: 100%; width: 100%; object-fit: ${second.image.endsWith('.png') && second.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">` : getWatchSVG(secOpt.caseColor || '#B08A45', secOpt.dialColor || '#1A365D', secOpt.strapColor || '#2C1E17', second.category === 'chronograph', 130)}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span class="pill-tag">${second.tag || secOpt.tag || 'Companion Edition'} • ${second.size || secOpt.size || '40mm'}</span>
+          <span style="font-size: 0.72rem; color: var(--color-champagne-gold); font-weight: 700;">${second.badge || 'FEATURED'}</span>
+        </div>
+        <div style="height: 170px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 8px 0; overflow: hidden; border-radius: var(--radius-sm); background: radial-gradient(circle, #FFFFFF 0%, #F5EEE5 100%);">
+          <img src="${secImg}" alt="${second.name}" style="height: 100%; width: 100%; object-fit: ${secImg && secImg.endsWith('.png') && second.id !== 'arven-hero-wrist-watch' ? 'contain' : 'cover'}; object-position: center;">
         </div>
         <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
-          <span style="font-size: 0.85rem; font-weight: 600;">${second.name}</span>
-          <span style="font-family: var(--font-serif); font-weight: 600;">$${(second.price || secOpt.price || 3950).toLocaleString()}</span>
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-deep-brown); text-transform: uppercase;">${second.name}</span>
+          <span style="font-family: var(--font-serif); font-weight: 600; color: var(--color-deep-brown);">$${(second.price || secOpt.price || 3950).toLocaleString()}.00</span>
         </div>
       </div>
     `;
