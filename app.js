@@ -1218,6 +1218,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   initContactForm();
   initOrderTracking();
   initDirectorPortal();
+  initScrollRevealAnimations();
+  initCounterAnimation();
 
   // Secret Director Admin Shortcut (Ctrl + Shift + A)
   window.addEventListener('keydown', (e) => {
@@ -1230,6 +1232,72 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
   });
 });
+
+/* Scroll Reveal Animations Engine */
+function initScrollRevealAnimations() {
+  const elementsToReveal = document.querySelectorAll(
+    'section, .section-header, .showcase-tile, .wrist-spotlight-card, .trending-cutout-badge, .glass-card, #journal-grid > div, #bespoke-visual-card, .contact-grid > div'
+  );
+
+  elementsToReveal.forEach((el, index) => {
+    if (!el.classList.contains('reveal-fade-up') && !el.classList.contains('reveal-zoom-in')) {
+      el.classList.add('reveal-fade-up');
+      const delay = (index % 4) * 100;
+      if (delay > 0) el.classList.add(`delay-${delay}`);
+    }
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reveal-active');
+      }
+    });
+  }, {
+    threshold: 0.08,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  document.querySelectorAll('.reveal-fade-up, .reveal-fade-left, .reveal-fade-right, .reveal-zoom-in').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+/* Luxury Animated Counter */
+function initCounterAnimation() {
+  const statNumbers = document.querySelectorAll('.stat-count');
+  if (!statNumbers.length) return;
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = entry.target;
+        const targetVal = parseFloat(target.dataset.target || target.innerText);
+        const suffix = target.dataset.suffix || '';
+        const duration = 1800;
+        const startTime = performance.now();
+
+        function updateCount(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+          const currentVal = Math.floor(easeProgress * targetVal);
+          target.textContent = `${currentVal}${suffix}`;
+
+          if (progress < 1) {
+            requestAnimationFrame(updateCount);
+          } else {
+            target.textContent = `${targetVal}${suffix}`;
+          }
+        }
+        requestAnimationFrame(updateCount);
+        obs.unobserve(target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  statNumbers.forEach(num => observer.observe(num));
+}
 
 /* 1. Navbar */
 function initNavbar() {

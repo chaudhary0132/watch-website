@@ -178,17 +178,16 @@
 
         <!-- Main Hero Center Grid (Wrist Watch Visual + Geometric Badges) -->
         <div class="hero-grid">
-
           <!-- Left/Center: Flagship Watch Showcase Card with Exact Watch & Interactive 3D Canvas -->
-          <div id="hero-watch-card-wrapper"
+          <div id="hero-watch-card-wrapper" class="gold-halo-pulse"
             style="position: relative; border-radius: var(--radius-lg); overflow: hidden; background: radial-gradient(circle at center, #2C211A 0%, #15110E 100%); min-height: 540px; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: var(--shadow-xl); border: 1px solid rgba(212,175,55,0.25);">
 
             <!-- Flagship Exact Watch Display (Default Active View) -->
             <div id="hero-exact-watch-view"
               style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-              <!-- Warm Golden Radial Spotlight Glow -->
-              <div
-                style="position: absolute; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle, rgba(212,175,55,0.26) 0%, rgba(212,175,55,0) 70%); filter: blur(35px); pointer-events: none;">
+              <!-- Warm Golden Radial Spotlight Glow with Breathing Animation -->
+              <div class="breathe-glow"
+                style="position: absolute; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, rgba(212,175,55,0) 70%); filter: blur(35px); pointer-events: none;">
               </div>
 
               <!-- Full Frame Exact Watch Presentation Edge-to-Edge with Dynamic Float & 3D Tilt -->
@@ -200,7 +199,7 @@
               </div>
 
               <!-- Floating Frosted Glass Spotlight Card (from Reference Image) -->
-              <div class="wrist-spotlight-card" style="top: 24%; left: 8%; width: 235px; text-align: left; z-index: 6;">
+              <div class="wrist-spotlight-card float-haute" style="top: 24%; left: 8%; width: 235px; text-align: left; z-index: 6;">
                 <div
                   style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-champagne-gold); margin-bottom: 8px;">
                 </div>
@@ -252,7 +251,7 @@
           <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 24px;">
 
             <!-- Trending Geometric Badge (from Reference Image 3) -->
-            <div class="trending-cutout-badge">
+            <div class="trending-cutout-badge luxury-shimmer">
               <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
                 <div
                   style="width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border-gold); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--color-champagne-gold);">
@@ -289,7 +288,7 @@
 
               <div style="display: flex; gap: 16px; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
                 <div>
-                  <span
+                  <span class="stat-count" data-target="100" data-suffix="%"
                     style="font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; color: var(--color-deep-brown);">100%</span>
                   <span
                     style="font-size: 0.7rem; display: block; color: var(--text-muted); text-transform: uppercase;">Swiss
@@ -297,7 +296,7 @@
                 </div>
                 <div style="width: 1px; background: var(--border-subtle);"></div>
                 <div>
-                  <span
+                  <span class="stat-count" data-target="2" data-suffix=" Years"
                     style="font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; color: var(--color-deep-brown);">2
                     Years</span>
                   <span

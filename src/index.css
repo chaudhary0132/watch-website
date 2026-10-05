@@ -428,10 +428,193 @@ img {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
   }
+  25% {
+    transform: translateY(-8px) rotate(0.8deg);
+  }
   50% {
-    transform: translateY(-14px) rotate(1.5deg);
+    transform: translateY(-16px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-8px) rotate(-0.8deg);
   }
 }
+
+/* ========================================================
+   HAUTE HORLOGERIE LUXURY ANIMATION SUITE
+   ======================================================== */
+
+/* 1. Scroll Reveal Animations */
+.reveal-fade-up {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-fade-left {
+  opacity: 0;
+  transform: translateX(-45px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-fade-right {
+  opacity: 0;
+  transform: translateX(45px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-zoom-in {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-active {
+  opacity: 1 !important;
+  transform: translate(0, 0) scale(1) !important;
+}
+
+/* Stagger delay classes */
+.delay-100 { transition-delay: 0.1s !important; }
+.delay-200 { transition-delay: 0.2s !important; }
+.delay-300 { transition-delay: 0.3s !important; }
+.delay-400 { transition-delay: 0.4s !important; }
+.delay-500 { transition-delay: 0.5s !important; }
+
+/* 2. Shimmer & Luxury Sheen Effect */
+.luxury-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(30deg) translateX(-100%);
+  animation: shimmerSweep 6s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  0%, 70% {
+    transform: rotate(30deg) translateX(-100%);
+  }
+  100% {
+    transform: rotate(30deg) translateX(100%);
+  }
+}
+
+/* 3. Golden Halo Pulse */
+@keyframes goldPulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.25), inset 0 0 15px rgba(212, 175, 55, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(212, 175, 55, 0.5), inset 0 0 25px rgba(212, 175, 55, 0.3);
+  }
+}
+
+.gold-halo-pulse {
+  animation: goldPulse 4s ease-in-out infinite;
+}
+
+/* 4. Breathing Glow behind exact watch */
+@keyframes breatheGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.28;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.45;
+  }
+}
+
+.breathe-glow {
+  animation: breatheGlow 4s ease-in-out infinite;
+}
+
+/* 5. Button Shimmer & Micro-pop */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.75s ease;
+}
+
+.btn:hover::after {
+  left: 140%;
+}
+
+/* 6. Glowing Gold Pill Badges */
+.pill-tag {
+  transition: all 0.3s ease;
+}
+
+.pill-tag:hover {
+  border-color: var(--color-champagne-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(176, 138, 69, 0.15);
+}
+
+/* 7. Toast Notification */
+.arven-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 10000;
+  background: #1C1815;
+  color: #FFF;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  transform: translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arven-toast.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 600px) {
+  .arven-toast {
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+  }
+}
+
 
 /* Responsive tweaks */
 @media (min-width: 992px) {
